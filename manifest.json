@@ -1,0 +1,13 @@
+{
+  "name": "轻盈计划 · 减脂工作台",
+  "short_name": "轻盈计划",
+  "description": "减脂追踪工作台手机版（只读，数据每晚自动更新）",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6ec",
+  "theme_color": "#2c5a3f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
