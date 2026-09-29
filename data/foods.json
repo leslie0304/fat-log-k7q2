@@ -1,0 +1,182 @@
+[
+  {
+    "name": "牛奶",
+    "kcal100": 54,
+    "defaultGrams": 250,
+    "unit": "毫升",
+    "unitGrams": 250,
+    "protein": 3.3,
+    "carb": 4.8,
+    "fat": 3.6
+  },
+  {
+    "name": "燕麦(干)",
+    "kcal100": 370,
+    "defaultGrams": 40,
+    "unit": "克",
+    "unitGrams": 40,
+    "protein": 15,
+    "carb": 61,
+    "fat": 7
+  },
+  {
+    "name": "鸡蛋",
+    "kcal100": 144,
+    "defaultGrams": 50,
+    "unit": "个",
+    "unitGrams": 50,
+    "protein": 13.3,
+    "carb": 2.8,
+    "fat": 8.8
+  },
+  {
+    "name": "黑芝麻",
+    "kcal100": 531,
+    "defaultGrams": 5,
+    "unit": "克",
+    "unitGrams": 5,
+    "protein": 19,
+    "carb": 24,
+    "fat": 46
+  },
+  {
+    "name": "核桃仁",
+    "kcal100": 646,
+    "defaultGrams": 10,
+    "unit": "克",
+    "unitGrams": 10,
+    "protein": 15,
+    "carb": 14,
+    "fat": 65
+  },
+  {
+    "name": "蓝莓",
+    "kcal100": 57,
+    "defaultGrams": 50,
+    "unit": "克",
+    "unitGrams": 50,
+    "protein": 0.7,
+    "carb": 14,
+    "fat": 0.3
+  },
+  {
+    "name": "米饭",
+    "kcal100": 130,
+    "defaultGrams": 50,
+    "unit": "克",
+    "unitGrams": 200,
+    "protein": 2.6,
+    "carb": 26,
+    "fat": 0.3
+  },
+  {
+    "name": "荞麦面(熟)",
+    "kcal100": 110,
+    "defaultGrams": 150,
+    "unit": "克",
+    "unitGrams": 150,
+    "protein": 4,
+    "carb": 21,
+    "fat": 0.6
+  },
+  {
+    "name": "鸡胸肉",
+    "kcal100": 133,
+    "defaultGrams": 100,
+    "unit": "克",
+    "unitGrams": 100,
+    "protein": 26,
+    "carb": 1,
+    "fat": 3
+  },
+  {
+    "name": "水浸金枪鱼",
+    "kcal100": 116,
+    "defaultGrams": 80,
+    "unit": "克",
+    "unitGrams": 80,
+    "protein": 25,
+    "carb": 0,
+    "fat": 1
+  },
+  {
+    "name": "虾",
+    "kcal100": 93,
+    "defaultGrams": 100,
+    "unit": "克",
+    "unitGrams": 100,
+    "protein": 20,
+    "carb": 0.5,
+    "fat": 1
+  },
+  {
+    "name": "菠菜",
+    "kcal100": 24,
+    "defaultGrams": 250,
+    "unit": "克",
+    "unitGrams": 250,
+    "protein": 2.9,
+    "carb": 2.8,
+    "fat": 0.4
+  },
+  {
+    "name": "无糖希腊酸奶",
+    "kcal100": 97,
+    "defaultGrams": 150,
+    "unit": "克",
+    "unitGrams": 150,
+    "protein": 9,
+    "carb": 3.6,
+    "fat": 5
+  },
+  {
+    "name": "猕猴桃",
+    "kcal100": 61,
+    "defaultGrams": 100,
+    "unit": "个",
+    "unitGrams": 100,
+    "protein": 1.1,
+    "carb": 14.2,
+    "fat": 0.6
+  },
+  {
+    "name": "鹰嘴豆(熟)",
+    "kcal100": 164,
+    "defaultGrams": 50,
+    "unit": "克",
+    "unitGrams": 50,
+    "protein": 8.9,
+    "carb": 27,
+    "fat": 2.6
+  },
+  {
+    "name": "青仁黑豆(干)",
+    "kcal100": 401,
+    "defaultGrams": 20,
+    "unit": "克",
+    "unitGrams": 20,
+    "protein": 36,
+    "carb": 34,
+    "fat": 15.8
+  },
+  {
+    "name": "绿叶蔬菜(混合)",
+    "kcal100": 25,
+    "defaultGrams": 250,
+    "unit": "克",
+    "unitGrams": 250,
+    "protein": 1.7,
+    "carb": 3,
+    "fat": 0.3
+  },
+  {
+    "name": "宫保鸡丁(外卖)",
+    "kcal100": 175,
+    "protein": 10,
+    "carb": 6,
+    "fat": 11,
+    "defaultGrams": 300,
+    "unit": "克",
+    "unitGrams": 300
+  }
+]
