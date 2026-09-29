@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>轻盈计划 · 减脂健身追踪台</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2c5a3f">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="logo"><div class="logo-badge">轻</div><div><div class="logo-name">轻盈计划</div><div class="logo-sub">每日一记，稳稳向简</div></div></div>
+  <div class="nav-sec">今天</div>
+  <nav>
+    <button class="nav-btn active" data-view="dash">☀ 今日总览</button>
+  </nav>
+  <div class="nav-sec">记录与追踪</div>
+  <nav>
+    <button class="nav-btn" data-view="body">🧍 身体趋势</button>
+    <button class="nav-btn" data-view="diet">🥗 饮食营养</button>
+    <button class="nav-btn" data-view="train">🏋 训练与作息</button>
+  </nav>
+  <div class="nav-sec">复盘与观察</div>
+  <nav>
+    <button class="nav-btn" data-view="review">📋 每周复盘</button>
+  </nav>
+  <div class="nav-sec">系统</div>
+  <nav>
+    <button class="nav-btn" data-view="settings">⚙ 设置</button>
+  </nav>
+  <div class="sidebar-tip">温和规律，无日戒满减期过。关注趋势，每天只要温和的行动。</div>
+</aside>
+
+<main class="content">
+  <div class="topline">
+    <div class="topline-title" id="viewTitle">今日总览</div>
+    <div class="topline-actions">
+      <button class="mini-btn" id="exportBtn" title="导出全部数据(JSON)">⬇ 备份数据</button>
+      <button class="mini-btn" id="importNow" title="立即扫描微信照片">⟳ 立即采集</button>
+    </div>
+  </div>
+  <div id="main"></div>
+</main>
+
+<div id="modalMask" class="modal-mask hidden"><div class="modal" id="modalBox"></div></div>
+<div id="toast" class="toast hidden"></div>
+<script src="app.js?v=3"></script>
+</body>
+</html>
