@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#2c5a3f"/>
+  <circle cx="256" cy="236" r="140" fill="none" stroke="#faf6ec" stroke-width="22"/>
+  <circle cx="256" cy="236" r="140" fill="none" stroke="#e8663c" stroke-width="22" stroke-linecap="round" stroke-dasharray="616 264" transform="rotate(-90 256 236)"/>
+  <text x="256" y="258" font-family="-apple-system,'PingFang SC',sans-serif" font-size="88" font-weight="800" fill="#faf6ec" text-anchor="middle">轻</text>
+  <rect x="150" y="412" width="212" height="16" rx="8" fill="#faf6ec" opacity=".85"/>
+</svg>
