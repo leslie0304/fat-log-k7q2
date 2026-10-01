@@ -262,6 +262,26 @@ function ringSvg(pct, color) {
       stroke-dasharray="${(c * p / 100).toFixed(1)} ${c.toFixed(1)}"/></svg>`;
 }
 
+/* ============ 每日摄入维度分析（总览页能量卡 & 简报共用逻辑） ============ */
+function macroAnalysis(kcal, mac, st, goal) {
+  const pT = +st.proteinTarget || 120, cT = +st.carbTarget || 215, fT = +st.fatTarget || 57;
+  const out = [];
+  if (!kcal) return ['今天还没记录，吃了东西随手记一下即可。'];
+  out.push(kcal > goal
+    ? `热量已超参考值 ${kcal - goal} kcal——一天超了不要紧，明天自然回归即可`
+    : `热量余 ${goal - kcal} kcal，总量节奏正常`);
+  if (mac.protein < pT * 0.8) out.push(`蛋白质缺口较大（差 ${pT - mac.protein}g）：下一餐加鸡蛋/鱼虾/瘦肉/无糖酸奶补上`);
+  else if (mac.protein >= pT) out.push(`蛋白质已达标（${mac.protein}g），保肌肉的关键做对了`);
+  else out.push(`蛋白质接近达标（差 ${pT - mac.protein}g），下一餐补一点`);
+  if (mac.carb < cT * 0.5) out.push(`碳水偏低（${mac.carb}/${cT}g）：长期过低会乏力、掉发，主食别省——米饭/荞麦面/薯类都行`);
+  else if (mac.carb > cT) out.push(`碳水超出 ${mac.carb - cT}g：下一餐主食减半即可`);
+  else out.push(`碳水在轨道内（${mac.carb}/${cT}g）`);
+  if (mac.fat > fT * 1.15) out.push(`脂肪已超 ${mac.fat - fT}g：今天剩的几餐避开油炸、肥肉和浓汤底`);
+  else if (mac.fat > fT) out.push(`脂肪略超（+${mac.fat - fT}g），问题不大`);
+  else out.push(`脂肪在轨道内（${mac.fat}/${fT}g）`);
+  return out;
+}
+
 /* ============ 视图：今日总览 ============ */
 function renderDash(el) {
   const st = S.settings, goal = +st.goalCalories || 1900;
@@ -319,6 +339,7 @@ function renderDash(el) {
         <div class="macro m-protein"><div class="m-head"><b>蛋白质</b><span>${mac.protein} / ${st.proteinTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.protein / (+st.proteinTarget || 120) * 100)}%"></i></div></div>
         <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div></div>
         <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div></div>
+        <div class="ana"><div class="ana-title">今日摄入分析</div>${macroAnalysis(kcal, mac, st, goal).map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
       </div>
       <div class="card">
         <h3>快速记录 <span class="link" data-go="diet">更多 ›</span></h3>
