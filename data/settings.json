@@ -1,11 +1,11 @@
 {
   "height": 173,
-  "weight": 99,
+  "weight": 98.35,
   "age": 40,
   "gender": "male",
-  "activity": 1.35,
+  "activity": 1.3,
   "targetWeight": 75,
-  "goalCalories": 1900,
+  "goalCalories": 1839,
   "deficitTarget": 600,
   "aiEndpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
   "aiModel": "glm-4v-flash",
@@ -13,6 +13,6 @@
   "proteinTarget": 120,
   "carbTarget": 215,
   "fatTarget": 57,
-  "activityMinutesTarget": 30,
+  "activityMinutesTarget": 10,
   "watchDirs": []
 }
