@@ -208,9 +208,12 @@ input, select { font-family: inherit; font-size: 14px; }
 }
 
 /* 日期导航 */
-.date-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.date-nav button { border: 1px solid var(--line); background: var(--card); border-radius: 10px; width: 34px; height: 34px; font-size: 15px; }
-.date-nav input[type=date] { border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; background: var(--card); }
+.date-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.date-nav button { border: 1px solid var(--line); background: var(--card); border-radius: 10px; white-space: nowrap; }
+.date-nav #dPrev, .date-nav #dNext { width: 34px; height: 34px; font-size: 15px; flex-shrink: 0; }
+.date-nav button.btn { width: auto; height: auto; padding: 5px 10px; font-size: 12.5px; }
+.date-nav input[type=date] { border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; background: var(--card); flex-shrink: 0; }
+.date-nav .muted { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
 /* 表格与图表 */
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
