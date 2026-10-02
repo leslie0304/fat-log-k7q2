@@ -13,6 +13,6 @@
   "proteinTarget": 120,
   "carbTarget": 215,
   "fatTarget": 57,
-  "activityMinutesTarget": 10,
+  "activityMinutesTarget": 30,
   "watchDirs": []
 }
