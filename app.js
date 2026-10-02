@@ -263,13 +263,26 @@ function ringSvg(pct, color) {
 }
 
 /* ============ 每日摄入维度分析（总览页能量卡 & 简报共用逻辑） ============ */
-function macroAnalysis(kcal, mac, st, goal) {
+/* 运动消耗估算：MET × 体重(kg) × 小时（Compendium of Physical Activities 常用值） */
+const EX_MET = { '骑自行车': 5.5, '跑步': 8, '快走': 4.3, '游泳': 6, '跳绳': 10, '力量训练': 4, '瑜伽': 3, '椭圆机': 5, '羽毛球': 5.5 };
+function exBurnKcal(date) {
+  const w = latestWeight() || 70;
+  let s = 0;
+  S.exercises.filter(e => e.date === date).forEach(e => {
+    const met = EX_MET[e.type] || 4;
+    s += met * w * ((+e.minutes || 0) / 60);
+  });
+  return Math.round(s);
+}
+function macroAnalysis(kcal, mac, st, goal, exKcal) {
   const pT = +st.proteinTarget || 120, cT = +st.carbTarget || 215, fT = +st.fatTarget || 57;
   const out = [];
   if (!kcal) return ['今天还没记录，吃了东西随手记一下即可。'];
-  out.push(kcal > goal
-    ? `热量已超参考值 ${kcal - goal} kcal——一天超了不要紧，明天自然回归即可`
-    : `热量余 ${goal - kcal} kcal，总量节奏正常`);
+  const t = tdee();
+  const realDeficit = t + (exKcal || 0) - kcal;
+  out.push(exKcal > 0
+    ? `摄入 ${kcal} kcal，运动燃烧约 ${exKcal} kcal → 实际缺口约 ${realDeficit} kcal${realDeficit < 0 ? '（今天超标，明天回归即可）' : ''}`
+    : (kcal > goal ? `热量已超参考值 ${kcal - goal} kcal——一天超了不要紧，明天自然回归即可` : `热量余 ${goal - kcal} kcal，总量节奏正常`));
   if (mac.protein < pT * 0.8) out.push(`蛋白质缺口较大（差 ${pT - mac.protein}g）：下一餐加鸡蛋/鱼虾/瘦肉/无糖酸奶补上`);
   else if (mac.protein >= pT) out.push(`蛋白质已达标（${mac.protein}g），保肌肉的关键做对了`);
   else out.push(`蛋白质接近达标（差 ${pT - mac.protein}g），下一餐补一点`);
@@ -288,6 +301,7 @@ function renderDash(el) {
   const kcal = dayKcal(S.date), mac = dayMacros(S.date);
   const w = latestWeight();
   const exMin = S.exercises.filter(e => e.date === S.date).reduce((s, e) => s + (+e.minutes || 0), 0);
+  const exKcal = exBurnKcal(S.date);
   const exTarget = +st.activityMinutesTarget || 30;
   const startDate = S.weights.length ? S.weights[0].date : S.date;
   const planDays = Math.max(1, Math.round((new Date(S.date) - new Date(startDate)) / 86400000) + 1);
@@ -339,7 +353,7 @@ function renderDash(el) {
         <div class="macro m-protein"><div class="m-head"><b>蛋白质</b><span>${mac.protein} / ${st.proteinTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.protein / (+st.proteinTarget || 120) * 100)}%"></i></div></div>
         <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div></div>
         <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div></div>
-        <div class="ana"><div class="ana-title">今日摄入分析</div>${macroAnalysis(kcal, mac, st, goal).map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
+        <div class="ana"><div class="ana-title">今日摄入分析</div>${macroAnalysis(kcal, mac, st, goal, exKcal).map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
       </div>
       <div class="card">
         <h3>快速记录 <span class="link" data-go="diet">更多 ›</span></h3>
