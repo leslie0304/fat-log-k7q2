@@ -351,6 +351,10 @@ function renderDash(el) {
       <div class="tip-body">${tipBody}</div>
       <button class="hero-btn" id="heroGo">${tipBtn}</button>
     </div>
+    <div class="hero-moti" id="motiBox">
+      <img src="photos/motivation/${motiOf(S.date).f}" alt="今日激励" onerror="document.getElementById('motiBox').classList.add('noimg')">
+      <div class="moti-cap">${motiOf(S.date).t}</div>
+    </div>
   </div>
 
   <div class="dash-grid">
@@ -401,13 +405,6 @@ function renderDash(el) {
       <div class="card">
         <h3>今日照片 <span class="link" data-go="diet">整理 ›</span></h3>
         <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
-      </div>
-      <div class="card moti-card">
-        <h3>每日激励 <span class="muted" style="font-weight:400;font-size:12px">· 每天一张</span></h3>
-        <div class="moti" id="motiBox">
-          <img src="photos/motivation/${motiOf(S.date).f}" alt="今日激励" onerror="document.getElementById('motiBox').classList.add('noimg')">
-          <div class="moti-t">${motiOf(S.date).t}</div>
-        </div>
       </div>
     </div>
   </div>`;
