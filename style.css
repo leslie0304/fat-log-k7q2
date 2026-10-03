@@ -282,11 +282,6 @@ canvas { max-width: 100%; }
   .content { padding: 14px; }
   .hero { grid-template-columns: 1fr; padding: 22px; }
   .hero-left h1 { font-size: 25px; }
-  /* 手机端：激励图仍显示，改为横向小图排在文字下方，不挤压原布局 */
-  .hero-moti { display: flex; align-items: center; gap: 12px; width: auto; margin-top: 16px; }
-  .hero-moti img { width: 88px; height: 112px; }
-  .hero-moti .moti-cap { margin-top: 0; text-align: left; font-size: 12.5px; }
-  .hero-moti.noimg { width: 88px; height: 112px; }
-  .hero-moti.noimg .moti-cap { display: none; }
+  .hero-moti { display: none; }   /* 手机端不显示激励图（陛下 08:44 定：窄屏空间有限，只在电脑端展示） */
   .dash-grid { grid-template-columns: 1fr; }
 }
