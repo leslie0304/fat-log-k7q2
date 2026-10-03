@@ -120,15 +120,24 @@ input, select { font-family: inherit; font-size: 14px; }
 .ana-line { font-size: 12.5px; color: #4a463a; line-height: 1.75; padding-left: 13px; position: relative; }
 .ana-line::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--green-mid); }
 .moti { position: relative; }
-.moti img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; }
-.moti-t {
-  position: absolute; left: 10px; right: 10px; bottom: 10px;
-  background: rgba(20, 32, 25, .62); color: #f6f1e4;
-  font-size: 13px; line-height: 1.5; padding: 8px 10px; border-radius: 10px;
+/* 每日激励：嵌在顶部横幅右侧，不占右列卡片位 */
+.hero-moti { position: relative; align-self: center; width: 148px; flex-shrink: 0; }
+.hero-moti img {
+  display: block; width: 148px; height: 186px; object-fit: cover;
+  border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, .3);
+  border: 1px solid rgba(255, 255, 255, .18);
 }
-.moti.noimg img { display: none; }
-.moti.noimg { background: linear-gradient(160deg, #2c5a3f, #1d3f2c); border-radius: 12px; min-height: 120px; }
-.moti.noimg .moti-t { position: static; background: none; font-size: 14px; padding: 18px 14px; }
+.hero-moti .moti-cap {
+  margin-top: 7px; font-size: 11.5px; line-height: 1.5; opacity: .82;
+  text-align: center; letter-spacing: .02em;
+}
+.hero-moti.noimg img { display: none; }
+.hero-moti.noimg {
+  width: 148px; height: 186px; border-radius: 12px;
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-moti.noimg .moti-cap { margin: 0; padding: 0 12px; font-size: 12.5px; opacity: .9; }
 
 
 /* 身体趋势卡 */
@@ -263,5 +272,6 @@ canvas { max-width: 100%; }
   .content { padding: 14px; }
   .hero { grid-template-columns: 1fr; padding: 22px; }
   .hero-left h1 { font-size: 25px; }
+  .hero-moti { display: none; }   /* 窄屏不显示激励图，避免挤压原布局 */
   .dash-grid { grid-template-columns: 1fr; }
 }
