@@ -262,6 +262,18 @@ function ringSvg(pct, color) {
       stroke-dasharray="${(c * p / 100).toFixed(1)} ${c.toFixed(1)}"/></svg>`;
 }
 
+/* ============ 每日激励（按日期轮换，2026-10-03 陛下钦定） ============ */
+const MOTI = [
+  { f: 'm1.jpg', t: '今天举起的哑铃，就是明年的线条。' },
+  { f: 'm2.jpg', t: '腿蹬起来，体重就掉下来。' },
+  { f: 'm3.jpg', t: '自律的人，不用别人催。' },
+  { f: 'm4.jpg', t: '先动起来，状态自己会跟上。' },
+];
+function motiOf(date) {
+  const idx = Math.floor(new Date(date + 'T00:00:00').getTime() / 86400000);
+  return MOTI[((idx % MOTI.length) + MOTI.length) % MOTI.length];
+}
+
 /* ============ 每日摄入维度分析（总览页能量卡 & 简报共用逻辑） ============ */
 /* 运动消耗估算：MET × 体重(kg) × 小时（Compendium of Physical Activities 常用值） */
 const EX_MET = { '骑自行车': 5.5, '跑步': 8, '快走': 4.3, '游泳': 6, '跳绳': 10, '力量训练': 4, '瑜伽': 3, '椭圆机': 5, '羽毛球': 5.5 };
@@ -389,6 +401,13 @@ function renderDash(el) {
       <div class="card">
         <h3>今日照片 <span class="link" data-go="diet">整理 ›</span></h3>
         <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
+      </div>
+      <div class="card moti-card">
+        <h3>每日激励 <span class="muted" style="font-weight:400;font-size:12px">· 每天一张</span></h3>
+        <div class="moti" id="motiBox">
+          <img src="photos/motivation/${motiOf(S.date).f}" alt="今日激励" onerror="document.getElementById('motiBox').classList.add('noimg')">
+          <div class="moti-t">${motiOf(S.date).t}</div>
+        </div>
       </div>
     </div>
   </div>`;
