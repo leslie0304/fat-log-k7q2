@@ -27,6 +27,23 @@
   {
     "date": "2026-10-05",
     "hours": 6.6,
-    "quality": 2
+    "quality": 2,
+    "deepMin": 71,
+    "lightMin": 230,
+    "remMin": 142,
+    "awakeCount": 4,
+    "deepPct": 20,
+    "lightPct": 59,
+    "remPct": 20,
+    "awakePct": 1,
+    "efficiency": 59,
+    "hrv": 54,
+    "restingHr": 67,
+    "spo2": 96,
+    "respRate": 14,
+    "score": 70,
+    "bedtime": "01:01",
+    "waketime": "08:20",
+    "peakHR": 115
   }
 ]
