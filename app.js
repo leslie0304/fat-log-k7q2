@@ -609,6 +609,7 @@ function renderTrain(el) {
       <button class="btn" id="sAdd">记录</button>
     </div>
     ${tableRecent(S.sleeps.slice(-10).reverse(), 'sleep')}
+    ${huaweiSleepPanel(S.sleeps)}
   </div>
   <div class="card"><h3>💡 起步阶段建议（BMI≥32 适用）</h3><div class="muted" style="line-height:1.9">
     · 以<strong>快走、游泳、椭圆机</strong>等低冲击运动为主，保护膝踝关节，从每次 20–30 分钟开始。<br>
@@ -633,6 +634,37 @@ function tableRecent(rows, kind) {
   const Q = { 5: '很好', 4: '较好', 3: '一般', 2: '较差', 1: '很差' };
   return `<table style="margin-top:10px"><tr><th>日期</th><th>${kind === 'type' ? '类型' : '时长(h)'}</th><th>${kind === 'type' ? '分钟' : '质量'}</th></tr>` +
     rows.map(r => `<tr><td>${esc(r.date)}</td><td class="num">${esc(kind === 'type' ? r.type : r.hours)}</td><td class="num">${esc(kind === 'type' ? r.minutes : (Q[r.quality] || r.quality))}</td></tr>`).join('') + '</table>';
+}
+
+/* ============ 华为手环睡眠详情（由夜间整理从睡眠长图读取写入） ============ */
+function huaweiSleepPanel(sleeps) {
+  const withDetail = (sleeps || []).filter(s => s.score || s.hrv || s.spo2);
+  if (!withDetail.length) {
+    return `<div class="muted" style="margin-top:12px">⌚️ 华为手环睡眠详情：暂未读到。<br>
+    <span style="font-size:12px">提示：睡眠长图请用「文件」方式发到文件传输助手（jpg 明文可读）；发「照片」是微信压缩格式，读不出内容。</span></div>`;
+  }
+  const s = withDetail[withDetail.length - 1];
+  const mm = v => v == null ? '—' : `${Math.floor(v / 60)}时${String(v % 60).padStart(2, '0')}分`;
+  const grade = (v, good, bad) => v == null ? '' : (v >= good ? 'good' : v <= bad ? 'bad' : 'warn');
+  return `
+  <div style="margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--cream,#fdfbf6)">
+    <div style="font-weight:600;margin-bottom:4px">⌚️ 华为手环睡眠详情 <span class="muted" style="font-weight:400;font-size:12px">${esc(s.date)}${s.bedtime ? ` · 入睡 ${esc(s.bedtime)} → 醒来 ${esc(s.waketime)}` : ''}</span></div>
+    <div class="stat-cards" style="margin:10px 0 4px">
+      <div class="stat-card"><div class="v ${grade(s.score, 80, 60)}">${s.score ?? '—'}</div><div class="k">睡眠评分</div></div>
+      <div class="stat-card"><div class="v">${mm(s.deepMin)}</div><div class="k">深睡 ${s.deepPct != null ? s.deepPct + '%' : ''}</div></div>
+      <div class="stat-card"><div class="v">${mm(s.remMin)}</div><div class="k">快速动眼 ${s.remPct != null ? s.remPct + '%' : ''}</div></div>
+      <div class="stat-card"><div class="v ${grade(s.efficiency, 85, 70)}">${s.efficiency != null ? s.efficiency + '%' : '—'}</div><div class="k">清醒次数 ${s.awakeCount ?? '—'}</div></div>
+      <div class="stat-card"><div class="v ${grade(s.hrv, 60, 40)}">${s.hrv ?? '—'}<span style="font-size:12px">ms</span></div><div class="k">心率变异性</div></div>
+      <div class="stat-card"><div class="v ${grade(s.restingHr, 0, 70)}">${s.restingHr ?? '—'}</div><div class="k">静息心率 次/分</div></div>
+      <div class="stat-card"><div class="v ${grade(s.spo2, 95, 92)}">${s.spo2 != null ? s.spo2 + '%' : '—'}</div><div class="k">平均血氧</div></div>
+      <div class="stat-card"><div class="v">${s.respRate ?? '—'}</div><div class="k">呼吸 次/分</div></div>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:8px">
+      浅睡 ${mm(s.lightMin)}（${s.lightPct ?? '—'}%）· 清醒占比 ${s.awakePct ?? '—'}% ·
+      夜间心率 ${s.peakHR ?? '—'} 次/分 ·
+      建议：${s.score >= 80 ? '睡眠质量良好，保持作息。' : s.score >= 70 ? '尚可，争取把入睡时间提前到 23:30 前。' : '评分偏低，重点是固定入睡时间与睡前 90 分钟不看屏幕。'}
+    </div>
+  </div>`;
 }
 
 /* ============ 视图：每周复盘 ============ */
