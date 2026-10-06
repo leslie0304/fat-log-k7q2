@@ -799,21 +799,6 @@ function renderReview(el) {
 }
 
 /* ============ 视图：设置 ============ */
-async function loadGbStatus(el) {
-  const box = el.querySelector('#gbStatus');
-  if (!box) return;
-  try {
-    const r = await api('/api/gadgetbridge');
-    if (!r.watchDirs || !r.watchDirs.length) { box.textContent = '未配置目录'; box.className = 'muted'; return; }
-    const ok = r.dirs.filter(d => d.exists);
-    const dbs = r.dirs.reduce((s, d) => s + d.dbs, 0);
-    box.innerHTML = '已配 ' + r.watchDirs.length + ' 个目录（' + (ok.length ? '存在' : '⚠️路径未找到') + '），'
-      + '其中有 <b>' + dbs + '</b> 个 Gadgetbridge 数据库，累计已解析 <b>' + r.importedCount + '</b> 个'
-      + (r.lastRun ? '，最近一次 ' + new Date(r.lastRun).toLocaleString('zh-CN') : '');
-    box.className = dbs ? 'good' : 'muted';
-  } catch (e) { box.textContent = '状态获取失败（服务未连接）'; box.className = 'muted'; }
-}
-
 function renderSettings(el) {
   const st = S.settings;
   const bmr = calcBMR(st), t = tdee();
@@ -851,18 +836,13 @@ function renderSettings(el) {
     <button class="btn ghost" id="watchTest" style="margin-top:10px">立即扫描一次</button>
   </div>
   <div class="card">
-    <h3>手环自动采集（华为手环 11 / Gadgetbridge）</h3>
-    <div class="muted" style="line-height:1.9;margin-bottom:10px">
-      装好 Gadgetbridge 并开启「Auto export database」后，它会定期把手环数据导成一个 <b>.db</b> 文件。<br>
-      把那个<b>导出目录</b>填到下面，工作台每 2 分钟自动扫一次，找到新数据库就自动解析入库
-      <b>运动 / 睡眠（含深睡·REM）/ 体重 / 心率 / HRV / SpO₂ / 压力</b>，无需再发截图。<br>
-      <b>三餐饮食仍需发照片</b>——手环测不了热量，这是唯一替代不了的一步。<br>
-      状态：<span id="gbStatus" class="muted">加载中…</span>
+    <h3>手环数据（转发截图即可）</h3>
+    <div class="muted" style="line-height:1.9">
+      运动、睡眠、体重、心率、HRV、血氧、压力——<b>把华为手环 App 里的卡片截图转发到「文件传输助手」</b>即可，
+      夜间自动整理会看图读全字段入账（深睡 / REM / 静息心率 / 睡眠效率 / 评分 / 步数 / 活动消耗等）。<br>
+      <b>转发小窍门</b>：一次多截几张（睡眠详情页、运动详情页、步数页），字段更全；同一天截多次以最新一张为准。<br>
+      建议固定在<b>次日早晨</b>转发头一天的卡片，这样最省事。
     </div>
-    <div class="form-item"><label>Gadgetbridge 导出目录（每行一个）</label>
-      <input type="text" id="stGbWatch" value="${esc((st.gbWatchDirs || []).join('\n'))}" placeholder="如 D:\\坚果云同步\\Gadgetbridge　或　E:\\Weixin\\...\\FileStorage\\File"></div>
-    <button class="btn" id="gbSave" style="margin-top:10px">保存导出目录</button>
-    <button class="btn ghost" id="gbTest" style="margin-top:10px">立即扫描一次</button>
   </div>
   <div class="card">
     <h3>AI 拍照识别（可选，免费模型）</h3>
@@ -920,26 +900,6 @@ function renderSettings(el) {
       toast(r.imported.length ? '新采集 ' + r.imported.length + ' 张照片' : '没有新照片');
     } catch (e) { toast('扫描失败：' + e.message); }
   };
-  el.querySelector('#gbSave').onclick = async () => {
-    st.gbWatchDirs = el.querySelector('#stGbWatch').value.split('\n').map(s => s.trim()).filter(Boolean);
-    await saveFile('settings', st); toast('手环导出目录已保存');
-    loadGbStatus(el);
-  };
-  el.querySelector('#gbTest').onclick = async () => {
-    try {
-      const r = await api('/api/gadgetbridge', { method: 'POST' });
-      if (r.imported && r.imported.length) {
-        toast('已解析 ' + r.imported.length + ' 个手环数据库');
-        const j = await api('/api/data'); Object.assign(S, j.data); renderView();
-      } else if (r.failed && r.failed.length) {
-        toast('解析失败：' + r.failed[0].error.slice(0, 80));
-      } else if (!r.scanned) {
-        toast('目录里没有 Gadgetbridge 导出的 .db 文件');
-      } else {
-        toast('没有新的手环数据（已是最新）');
-      }
-    } catch (e) { toast('扫描失败：' + e.message); }
-  };
   el.querySelector('#aiSave').onclick = async () => {
     Object.assign(st, { aiKey: el.querySelector('#aiKey').value.trim(), aiEndpoint: el.querySelector('#aiEp').value.trim(), aiModel: el.querySelector('#aiModel').value.trim() });
     await saveFile('settings', st); toast('AI 设置已保存');
@@ -961,8 +921,6 @@ function renderSettings(el) {
     await saveFile('foods', S.foods); toast('食物库已保存');
   };
   el.querySelectorAll('#foodTable .del').forEach(b => b.onclick = () => { S.foods.splice(+b.dataset.i, 1); saveFile('foods', S.foods).then(renderView); });
-
-  loadGbStatus(el);   // 手环导出目录状态（异步，不阻塞渲染）
 }
 
 /* ============ 路由与启动 ============ */
