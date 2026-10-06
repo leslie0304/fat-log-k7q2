@@ -14,5 +14,6 @@
   "carbTarget": 215,
   "fatTarget": 57,
   "activityMinutesTarget": 30,
-  "watchDirs": []
+  "watchDirs": [],
+  "gbWatchDirs": []
 }
