@@ -1,0 +1,173 @@
+{
+  "records": [
+    {
+      "id": "auto_1001_b1",
+      "meal": "早餐",
+      "name": "韭菜饼(昨晚剩·约1/3张)",
+      "grams": 170,
+      "kcal": 340,
+      "protein": 18,
+      "carb": 20,
+      "fat": 21,
+      "source": "auto",
+      "note": "看图估算：油煎饼约2kcal/g"
+    },
+    {
+      "id": "auto_1001_b2",
+      "meal": "早餐",
+      "name": "牛奶(碗装·约250ml)",
+      "grams": 250,
+      "kcal": 135,
+      "protein": 8,
+      "carb": 13,
+      "fat": 7,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l1",
+      "meal": "午餐",
+      "name": "白斩鸡(2块)",
+      "grams": 50,
+      "kcal": 95,
+      "protein": 9,
+      "carb": 0,
+      "fat": 6,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l2",
+      "meal": "午餐",
+      "name": "清蒸鲈鱼(1块)",
+      "grams": 60,
+      "kcal": 65,
+      "protein": 12,
+      "carb": 0,
+      "fat": 2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l3",
+      "meal": "午餐",
+      "name": "虾仁(6颗)+醉大头虾(2个)",
+      "grams": 70,
+      "kcal": 75,
+      "protein": 12,
+      "carb": 1,
+      "fat": 2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l4",
+      "meal": "午餐",
+      "name": "门腔(猪舌·1片)",
+      "grams": 15,
+      "kcal": 30,
+      "protein": 3,
+      "carb": 0,
+      "fat": 2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l5",
+      "meal": "午餐",
+      "name": "黄鳝肉(4块)",
+      "grams": 40,
+      "kcal": 45,
+      "protein": 6,
+      "carb": 0,
+      "fat": 2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l6",
+      "meal": "午餐",
+      "name": "蟹肉蟹黄(一点点)",
+      "grams": 10,
+      "kcal": 15,
+      "protein": 2,
+      "carb": 0,
+      "fat": 1,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l7",
+      "meal": "午餐",
+      "name": "酸汤肥牛(约250g份)",
+      "grams": 250,
+      "kcal": 450,
+      "protein": 20,
+      "carb": 5,
+      "fat": 38,
+      "source": "auto",
+      "note": "估算：肥牛约150g，汤底含油"
+    },
+    {
+      "id": "auto_1001_l8",
+      "meal": "午餐",
+      "name": "金针菇(一小把)",
+      "grams": 50,
+      "kcal": 16,
+      "protein": 1,
+      "carb": 3,
+      "fat": 0,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_l9",
+      "meal": "午餐",
+      "name": "小年糕(2根·很小)",
+      "grams": 40,
+      "kcal": 90,
+      "protein": 1,
+      "carb": 20,
+      "fat": 0,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1001_d1",
+      "meal": "晚餐",
+      "name": "盒马全麦脆麦片(1袋·约20g)",
+      "grams": 20,
+      "kcal": 77,
+      "protein": 2.4,
+      "carb": 14.1,
+      "fat": 0.6,
+      "source": "auto",
+      "note": "品类密度384kcal/100g；袋重按400g/20包推算，以包装背标为准"
+    },
+    {
+      "id": "auto_1001_d2",
+      "meal": "晚餐",
+      "name": "烘烤青仁黑豆(10颗)",
+      "grams": 5,
+      "kcal": 20,
+      "protein": 1.8,
+      "carb": 1.5,
+      "fat": 0.9,
+      "source": "auto",
+      "note": "按每颗约0.5g估算"
+    }
+  ],
+  "photos": [
+    {
+      "file": "1790819046035_wx_camera_1790817821513.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1790819046041_wx_camera_1790818695558.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1790853685216_wx_camera_1790853463186.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "3c75420e1a4f8ba832ecb1e2cdbd852f.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "909d5fba3d77bdebdbb6fad8195507fe.jpg",
+      "meal": "午餐"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "records": [
+    {
+      "id": "auto_1005_b1",
+      "meal": "早餐",
+      "name": "面包(moments·吃一半)",
+      "grams": 140,
+      "kcal": 380,
+      "protein": 11,
+      "carb": 60,
+      "fat": 10,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1005_l1",
+      "meal": "午餐",
+      "name": "抹茶红豆饼(1块)",
+      "grams": 80,
+      "kcal": 260,
+      "protein": 5,
+      "carb": 40,
+      "fat": 8,
+      "source": "auto",
+      "note": "餐馆"
+    },
+    {
+      "id": "auto_1005_l2",
+      "meal": "午餐",
+      "name": "韭菜炒蛋(吃2/3)",
+      "grams": 165,
+      "kcal": 300,
+      "protein": 15,
+      "carb": 6,
+      "fat": 25,
+      "source": "auto",
+      "note": "餐馆"
+    },
+    {
+      "id": "auto_1005_l3",
+      "meal": "午餐",
+      "name": "大蒜红烧鸡块(吃1/3)",
+      "grams": 120,
+      "kcal": 240,
+      "protein": 20,
+      "carb": 5,
+      "fat": 16,
+      "source": "auto",
+      "note": "餐馆"
+    },
+    {
+      "id": "auto_1005_l4",
+      "meal": "午餐",
+      "name": "红烧鲫鱼(吃1.5条·可食部)",
+      "grams": 180,
+      "kcal": 270,
+      "protein": 27,
+      "carb": 3,
+      "fat": 17,
+      "source": "auto",
+      "note": "餐馆"
+    },
+    {
+      "id": "auto_1005_l5",
+      "meal": "午餐",
+      "name": "蒜炒油麦菜(吃一半)",
+      "grams": 150,
+      "kcal": 95,
+      "protein": 3,
+      "carb": 5,
+      "fat": 7,
+      "source": "auto",
+      "note": "餐馆"
+    },
+    {
+      "id": "auto_1005_s1",
+      "meal": "加餐",
+      "name": "柠檬茶咖啡(1杯)",
+      "grams": 300,
+      "kcal": 130,
+      "protein": 1,
+      "carb": 24,
+      "fat": 2,
+      "source": "auto",
+      "note": "含糖饮品·估"
+    },
+    {
+      "id": "auto_1005_d1",
+      "meal": "晚餐",
+      "name": "牛奶(1碗)",
+      "grams": 250,
+      "kcal": 135,
+      "protein": 8.3,
+      "carb": 12,
+      "fat": 9,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1005_d2",
+      "meal": "晚餐",
+      "name": "黑芝麻(1勺)",
+      "grams": 7,
+      "kcal": 37,
+      "protein": 1.3,
+      "carb": 1.7,
+      "fat": 3.2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1005_d3",
+      "meal": "晚餐",
+      "name": "青仁黑豆+鹰嘴豆(共20颗·干)",
+      "grams": 12,
+      "kcal": 48,
+      "protein": 3.6,
+      "carb": 4.3,
+      "fat": 1.9,
+      "source": "auto"
+    }
+  ],
+  "photos": [
+    {
+      "file": "0c9a1d8d84bcf3b45c9fd05abddbbffb.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179434_mmexport1791159711331.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179440_mmexport1791164226289.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179448_wx_camera_1791172858754.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179453_wx_camera_1791172994727.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179459_wx_camera_1791173073548.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179464_wx_camera_1791173229809.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179469_wx_camera_1791173511232.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1791205179473_wx_camera_1791174753481.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "27c92af3e0aa9c77c6e3817d6bc92c89.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "325dd313d8b882db475ac738451e3ea6.jpg",
+      "meal": "早餐"
+    },
+    {
+      "file": "405ce6f22f6056c1e074e76b869d945a.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "5b6d4c876e2689ef601c2b5a8d640d6e.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "936d7d2db51705fbc9b947621f37f3fa.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "b34476bff30bd21e93a33f375800a8b0.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "df81010878a8bf5cd44d4789b613355c.jpg",
+      "meal": "午餐"
+    }
+  ]
+}

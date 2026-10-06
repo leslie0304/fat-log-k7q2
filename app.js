@@ -103,7 +103,7 @@ function parseText(input) {
       const m2 = name.match(/^(.+?)\s*(\d+(?:\.\d+)?)(克|g|毫升|ml)$/);
       if (m2) { name = m2[1].trim(); grams = parseFloat(m2[2]); }
       else {
-        const m3 = name.match(/^(.+?)\s*(\d+)\s*(个|只|颗|枚|片|根|杯|盒|勺)$/);
+        const m3 = name.match(/^(.+?)\s*(\d+(?:\.\d+)?)\s*(个|只|颗|枚|片|根|杯|盒|勺|碗|把)$/);
         if (m3) { name = m3[1].trim(); count = parseFloat(m3[2]); }
       }
     }
@@ -418,7 +418,7 @@ function renderDash(el) {
   el.querySelectorAll('.meal-tab').forEach(b => b.onclick = () => { S.meal = b.dataset.meal; renderDash(el); });
   el.querySelectorAll('.chip').forEach(b => b.onclick = () => {
     const f = S.foods[+b.dataset.food];
-    addRecord(f.name, f.defaultGrams); toast(`已记录 ${f.name} ${f.defaultGrams}${f.unit || '克'}`); renderView();
+    addRecord(f.name, f.defaultGrams); toast(`已记录 ${f.name} ${f.defaultGrams}克`); renderView();
   });
   const txtAdd = () => {
     const v = el.querySelector('#txtInput').value.trim(); if (!v) return;
@@ -448,7 +448,7 @@ function renderDiet(el) {
     <h3>快速记录</h3>
     <div class="meal-tabs">${MEALS.map(m => `<button class="meal-tab ${m === S.meal ? 'active' : ''}" data-meal="${m}">${m}</button>`).join('')}</div>
     <div class="row" style="margin-bottom:10px">${COMBOS.map((c, i) => `<button class="combo-btn" data-combo="${i}">${c.label}</button>`).join('')}</div>
-    <div class="chips">${S.foods.map((f, i) => `<button class="chip" data-food="${i}">${esc(f.name)} <span class="muted">${f.defaultGrams}${(f.unit || '克').replace('毫升', 'ml')}</span></button>`).join('')}</div>
+    <div class="chips">${S.foods.map((f, i) => `<button class="chip" data-food="${i}">${esc(f.name)} <span class="muted">${f.defaultGrams}克</span></button>`).join('')}</div>
     <div class="text-input-row">
       <input id="txtInput" placeholder="文字记录，如：250克菠菜、80克水浸金枪鱼、2个鸡蛋">
       <button class="btn" id="txtAdd">解析</button>
@@ -905,7 +905,7 @@ function renderSettings(el) {
     await saveFile('settings', st); toast('AI 设置已保存');
   };
   el.querySelector('#foodAdd').onclick = () => {
-    S.foods.push({ name: '新食物', kcal100: 100, protein: 5, carb: 10, fat: 3, defaultGrams: 100, unit: '克', unitGrams: 100 });
+    S.foods.push({ name: '新食物', kcal100: 100, protein: 5, carb: 10, fat: 3, defaultGrams: 100, unit: '克', unitGrams: 1 });
     renderView();
   };
   el.querySelector('#foodSave').onclick = async () => {

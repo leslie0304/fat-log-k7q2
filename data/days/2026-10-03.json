@@ -1,0 +1,266 @@
+{
+  "records": [
+    {
+      "id": "auto_1003_b1",
+      "meal": "早餐",
+      "name": "牛奶(1盒)",
+      "grams": 250,
+      "kcal": 135,
+      "protein": 8.3,
+      "carb": 12,
+      "fat": 9,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1003_b2",
+      "meal": "早餐",
+      "name": "无糖燕麦(1份)",
+      "grams": 40,
+      "kcal": 148,
+      "protein": 6,
+      "carb": 24,
+      "fat": 3,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1003_b3",
+      "meal": "早餐",
+      "name": "黑芝麻(1勺)",
+      "grams": 7,
+      "kcal": 37,
+      "protein": 1.3,
+      "carb": 1.7,
+      "fat": 3.2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1003_b4",
+      "meal": "早餐",
+      "name": "麻核桃仁(3颗)",
+      "grams": 8,
+      "kcal": 52,
+      "protein": 1.2,
+      "carb": 1.1,
+      "fat": 5.2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1003_l1",
+      "meal": "午餐",
+      "name": "多宝鱼(整条约2条·吃一半)",
+      "grams": 150,
+      "kcal": 195,
+      "protein": 33,
+      "carb": 0,
+      "fat": 5,
+      "source": "auto",
+      "note": "照片13:28·清蒸多宝鱼"
+    },
+    {
+      "id": "auto_1003_l2",
+      "meal": "午餐",
+      "name": "牛肉(吃图里一半)",
+      "grams": 90,
+      "kcal": 180,
+      "protein": 17,
+      "carb": 0,
+      "fat": 12,
+      "source": "auto",
+      "note": "照片13:39·卤牛肉"
+    },
+    {
+      "id": "auto_1003_l3",
+      "meal": "午餐",
+      "name": "排骨(吃图里一半)",
+      "grams": 90,
+      "kcal": 270,
+      "protein": 16,
+      "carb": 0,
+      "fat": 22,
+      "source": "auto",
+      "note": "照片13:43·蒜香排骨"
+    },
+    {
+      "id": "auto_1003_l4",
+      "meal": "午餐",
+      "name": "大肠(吃图里一半)",
+      "grams": 60,
+      "kcal": 120,
+      "protein": 7,
+      "carb": 0,
+      "fat": 10,
+      "source": "auto",
+      "note": "照片13:46·卤大肠"
+    },
+    {
+      "id": "auto_1003_l5",
+      "meal": "午餐",
+      "name": "笋干烧肉(吃图里一半)",
+      "grams": 80,
+      "kcal": 300,
+      "protein": 12,
+      "carb": 4,
+      "fat": 26,
+      "source": "auto",
+      "note": "照片13:46·笋干烧肉"
+    },
+    {
+      "id": "auto_1003_l6",
+      "meal": "午餐",
+      "name": "炝虾(吃图里一半)",
+      "grams": 90,
+      "kcal": 90,
+      "protein": 18,
+      "carb": 1,
+      "fat": 1,
+      "source": "auto",
+      "note": "照片13:57·炝虾·陛下后更正只吃10个"
+    },
+    {
+      "id": "auto_1003_s1",
+      "meal": "加餐",
+      "name": "牛油果糯米奶昔(1杯)",
+      "grams": 300,
+      "kcal": 350,
+      "protein": 8,
+      "carb": 45,
+      "fat": 14,
+      "source": "auto",
+      "note": "文字14:32·照片13:59为牛油果奶昔杯"
+    },
+    {
+      "id": "auto_1003_d1",
+      "meal": "晚餐",
+      "name": "笋干烧肉(4块笋干+1块肉)",
+      "grams": 65,
+      "kcal": 82,
+      "protein": 7.5,
+      "carb": 3.5,
+      "fat": 5.2,
+      "source": "auto",
+      "note": "照片18:06·已按18:37更正文字"
+    },
+    {
+      "id": "auto_1003_d2",
+      "meal": "晚餐",
+      "name": "炝虾(10个·很小的虾)",
+      "grams": 50,
+      "kcal": 49,
+      "protein": 11,
+      "carb": 0.5,
+      "fat": 0.6,
+      "source": "auto",
+      "note": "照片18:07·已按18:37更正文字"
+    },
+    {
+      "id": "auto_1003_d3",
+      "meal": "晚餐",
+      "name": "炒鸡蛋(吃了图里一半)",
+      "grams": 100,
+      "kcal": 160,
+      "protein": 13,
+      "carb": 2,
+      "fat": 12,
+      "source": "auto",
+      "note": "照片18:10·韭菜炒蛋"
+    },
+    {
+      "id": "auto_1003_d4",
+      "meal": "晚餐",
+      "name": "青菜(吃了图里一半)",
+      "grams": 150,
+      "kcal": 60,
+      "protein": 3,
+      "carb": 5,
+      "fat": 3.5,
+      "source": "auto",
+      "note": "照片18:07·炒青菜"
+    },
+    {
+      "id": "auto_1003_d5",
+      "meal": "晚餐",
+      "name": "鸡汤(3碗·照片为一大盆)",
+      "grams": 600,
+      "kcal": 210,
+      "protein": 16,
+      "carb": 2,
+      "fat": 15,
+      "source": "auto",
+      "note": "照片18:21·整盆鸡汤·含枸杞红枣"
+    },
+    {
+      "id": "auto_1003_d6",
+      "meal": "晚餐",
+      "name": "鸡肉带皮(1块)",
+      "grams": 40,
+      "kcal": 92,
+      "protein": 12,
+      "carb": 0,
+      "fat": 8,
+      "source": "auto",
+      "note": "照片18:38·已按更正"
+    }
+  ],
+  "photos": [
+    {
+      "file": "11e3fbc26050d3a1479c1810e5728775.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1790988143385_mmexport1790983577130.jpg",
+      "meal": "早餐"
+    },
+    {
+      "file": "18449ba200685f9ca999c23a3b6d048a.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "1a5e9fd22999c2bc9de47f1de678a311.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "26f62f8e10994c2efe0bea011c129e64.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "293e851aa3af145ed1ced4d6adc30e46.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "311a44372ba2a41ef46af9237842a98f.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "420e20b6af47dddf3b44c4df7e5a2355.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "4ea4b56930cf8e6d3a71818aa544b3b8.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "602a5c4755122dc536d4b83ffa460b7b.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "814ef86e13c2ada74272c8a870aad8be.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "90d85615d95b0ec62e1313e956c6e304.jpg",
+      "meal": "早餐"
+    },
+    {
+      "file": "91d0871bc3c2eeef71a9f70fa3fee01d.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "a6fdde3faf5f062a4fa75885d956d248.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "c8dd30879a2a8b416b48a198d867eccb.jpg",
+      "meal": "晚餐"
+    }
+  ]
+}
