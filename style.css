@@ -113,9 +113,9 @@ input, select { font-family: inherit; font-size: 14px; }
 .macro .m-head b { font-weight: 600; }
 .bar { height: 9px; border-radius: 99px; background: #efe9dc; overflow: hidden; }
 .bar > i { display: block; height: 100%; border-radius: 99px; transition: width .4s; }
-.m-protein > i { background: var(--green-mid); }
-.m-carb > i { background: var(--gold); }
-.m-fat > i { background: var(--orange); }
+.macro.m-protein .bar > i { background: var(--green-mid); }
+.macro.m-carb .bar > i { background: var(--gold); }
+.macro.m-fat .bar > i { background: var(--orange); }
 .m-kcal > i { background: linear-gradient(90deg, #f0a05a, var(--orange)); }
 .ana { margin-top: 12px; border-top: 1px dashed #ddd6c4; padding-top: 9px; }
 .ana-title { font-size: 12px; font-weight: 600; color: #8a8574; margin-bottom: 5px; letter-spacing: .05em; }

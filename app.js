@@ -276,7 +276,11 @@ function motiOf(date) {
 
 /* ============ 每日摄入维度分析（总览页能量卡 & 简报共用逻辑） ============ */
 /* 运动消耗估算：MET × 体重(kg) × 小时（Compendium of Physical Activities 常用值） */
-const EX_MET = { '骑自行车': 5.5, '跑步': 8, '快走': 4.3, '游泳': 6, '跳绳': 10, '力量训练': 4, '瑜伽': 3, '椭圆机': 5, '羽毛球': 5.5 };
+const EX_MET = {
+  '骑自行车': 5.5, '跑步': 8, '快走': 4.3, '游泳': 6, '跳绳': 10, '力量训练': 4, '瑜伽': 3,
+  '椭圆机': 5, '羽毛球': 5.5, '步行': 3.5, '户外步行': 4.0, '爬楼梯': 8, '爬山': 6.5,
+  '球类运动': 7, '舞蹈': 5, '拉伸': 2.3, '家务': 3.0, '通勤步行': 3.5
+};
 function exBurnKcal(date) {
   const w = latestWeight() || 70;
   let s = 0;
@@ -669,7 +673,8 @@ function huaweiSleepPanel(sleeps) {
 
 /* ============ 视图：每周复盘 ============ */
 function renderReview(el) {
-  const goal = +S.settings.goalCalories || 1900;
+  const st = S.settings, goal = +st.goalCalories || 1900;
+  const pT = +st.proteinTarget || 120, cT = +st.carbTarget || 215, fT = +st.fatTarget || 57;
   const days = [];
   for (let i = 13; i >= 0; i--) {
     const dt = todayStr(new Date(Date.now() - i * 86400000));
@@ -677,11 +682,57 @@ function renderReview(el) {
   }
   const last7 = days.slice(7);
   const valid = last7.filter(d => d.has);
-  const avg = valid.length ? Math.round(valid.reduce((s, d) => s + d.kcal, 0) / valid.length) : 0;
+  const n = valid.length || 1;
+  const avg = valid.length ? Math.round(valid.reduce((s, d) => s + d.kcal, 0) / n) : 0;
   const okDays = valid.filter(d => d.kcal <= goal).length;
-  const rate = valid.length ? Math.round(okDays / valid.length * 100) : 0;
+  const rate = valid.length ? Math.round(okDays / n * 100) : 0;
   const w7 = S.weights.filter(w => w.date >= last7[0].date);
   const wDelta = w7.length >= 2 ? (w7[w7.length - 1].kg - w7[0].kg) : null;
+  const wNow = latestWeight();
+
+  /* ---- 三大营养素 7 日均值与达标率 ---- */
+  let sP = 0, sC = 0, sF = 0;
+  valid.forEach(d => { const m = dayMacros(d.date); sP += m.protein; sC += m.carb; sF += m.fat; });
+  const aP = Math.round(sP / n), aC = Math.round(sC / n), aF = Math.round(sF / n);
+  const rP = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).protein >= pT * 0.9).length / n * 100) : 0;
+  const rC = valid.length ? Math.round(valid.filter(d => { const m = dayMacros(d.date); return m.carb >= cT * 0.5 && m.carb <= cT; }).length / n * 100) : 0;
+  const rF = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).fat <= fT).length / n * 100) : 0;
+
+  /* ---- 运动 7 日：累计分钟 + MET 折算消耗（目标 = 设置里的每日活动目标 × 7，下限兜 WHO 150） ---- */
+  const exMinTarget = Math.max(150, (+st.activityMinutesTarget || 30) * 7);
+  let exMin = 0, exK = 0, exDays = 0;
+  last7.forEach(d => {
+    const mins = S.exercises.filter(e => e.date === d.date).reduce((s, e) => s + (+e.minutes || 0), 0);
+    if (mins > 0) exDays++;
+    exMin += mins; exK += exBurnKcal(d.date);
+  });
+
+  /* ---- 睡眠 7 日 ---- */
+  const sl7 = S.sleeps.filter(s => last7.some(d => d.date === s.date));
+  const slH = sl7.length ? (sl7.reduce((s, x) => s + (+x.hours || 0), 0) / sl7.length) : 0;
+  const slQ = sl7.length ? (sl7.reduce((s, x) => s + (+x.quality || 0), 0) / sl7.length) : 0;
+
+  /* ---- 平台期预警：14 天体重几乎没动 ---- */
+  const w14 = S.weights.filter(x => x.date >= todayStr(new Date(Date.now() - 13 * 86400000)));
+  const plateau = w14.length >= 3 && Math.abs(w14[w14.length - 1].kg - w14[0].kg) < 0.3;
+
+  /* ---- 目标重算建议（TDEE 随体重自动下行） ---- */
+  const sugGoal = Math.round(tdee() - (+st.deficitTarget || 600));
+  const needDown = sugGoal < goal - 20;
+  const sugP = Math.round(wNow * 1.2), sugF = Math.round(wNow * 0.6);
+  const sugC = Math.max(0, Math.round((sugGoal - sugP * 4 - sugF * 9) / 4));
+
+  /* ---- 本周结论（工作台内展示，不出周报文件） ---- */
+  const sug = [];
+  sug.push(rate >= 70 ? `缺口达标率 ${rate}%，节奏稳，保持这个吃法。` : `缺口达标率仅 ${rate}%，超出的日子多在聚餐/外食，下次提前控一控。`);
+  if (aP < pT * 0.9) sug.push(`蛋白 7 日均 ${aP}g（目标 ${pT}g），每天补一份鸡蛋 / 无糖酸奶 / 鱼虾最省事。`);
+  if (aC < cT * 0.5) sug.push(`碳水 7 日均 ${aC}g 偏低，长期过低会乏力掉发，主食别省。`);
+  if (aF > fT) sug.push(`脂肪 7 日均 ${aF}g，超目标 ${aF - fT}g，明天起换清蒸白灼、少喝汤底。`);
+  if (exMin < exMinTarget) sug.push(`运动 7 日累计 ${exMin} 分钟（目标 ${exMinTarget}），只动了 ${exDays} 天，建议每天快走 20–30 分钟补齐。`);
+  else sug.push(`运动 7 日累计 ${exMin} 分钟，已达${exMinTarget} 分钟目标，保持这个节奏。`);
+  if (slH && slH < 7) sug.push(`睡眠 7 日均 ${slH.toFixed(1)}h，偏少会拖慢减脂节奏（还会抬高食欲），今晚早点躺。`);
+  if (plateau) sug.push('⚠️ 近两周体重几乎没变化，建议做一次平台期诊断（核对热量实际值、肌肉量、水分与睡眠）。');
+
   el.innerHTML = `
   <div class="card">
     <h3>近 7 天概览</h3>
@@ -690,8 +741,44 @@ function renderReview(el) {
       <div class="stat-card"><div class="v ${rate >= 70 ? 'good' : 'bad'}">${valid.length ? rate + '%' : '—'}</div><div class="k">缺口达成率（≤${goal}）</div></div>
       <div class="stat-card"><div class="v">${okDays}/${valid.length || 0}</div><div class="k">达标天数</div></div>
       <div class="stat-card"><div class="v ${wDelta !== null && wDelta <= 0 ? 'good' : wDelta === null ? '' : 'bad'}">${wDelta === null ? '—' : (wDelta > 0 ? '+' : '') + wDelta.toFixed(1) + 'kg'}</div><div class="k">本周体重变化</div></div>
+      <div class="stat-card"><div class="v">${(latestWeight() || 0).toFixed(1)}<em>kg</em></div><div class="k">最新体重（距目标 ${((latestWeight() || 0) - (+S.settings.targetWeight || 75)).toFixed(1)}kg）</div></div>
     </div>
     <div class="muted">理论减重速度：${((+S.settings.deficitTarget || 600) * 7 / 7700).toFixed(2)} kg/周。看趋势，不纠结单日波动。</div>
+  </div>
+  <div class="card">
+    <h3>三大营养素 7 日趋势</h3>
+    <div class="macro m-protein"><div class="m-head"><b>蛋白 7 日均</b><span>${aP} / ${pT} g · 达标率 ${rP}%</span></div><div class="bar"><i style="width:${Math.min(100, aP / pT * 100)}%"></i></div></div>
+    <div class="macro m-carb"><div class="m-head"><b>碳水 7 日均</b><span>${aC} / ${cT} g · 达标率 ${rC}%</span></div><div class="bar"><i style="width:${Math.min(100, aC / cT * 100)}%"></i></div></div>
+    <div class="macro m-fat"><div class="m-head"><b>脂肪 7 日均</b><span>${aF} / ${fT} g · 达标率 ${rF}%</span></div><div class="bar"><i style="width:${Math.min(100, aF / fT * 100)}%"></i></div></div>
+  </div>
+  <div class="card">
+    <h3>运动与睡眠 7 日</h3>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="v ${exMin >= exMinTarget ? 'good' : ''}">${exMin}<em>min</em></div><div class="k">运动累计（目标${exMinTarget}）</div></div>
+      <div class="stat-card"><div class="v">${exK}<em>kcal</em></div><div class="k">运动消耗（MET折算）</div></div>
+      <div class="stat-card"><div class="v">${exDays}<em>天</em></div><div class="k">有运动天数</div></div>
+      <div class="stat-card"><div class="v ${slH >= 7 ? 'good' : 'bad'}">${slH ? slH.toFixed(1) : '—'}<em>h</em></div><div class="k">日均睡眠（7-9h）</div></div>
+      <div class="stat-card"><div class="v">${slQ ? slQ.toFixed(1) : '—'}<em>/5</em></div><div class="k">睡眠质量</div></div>
+    </div>
+    <div class="muted">运动消耗 = MET × 体重 × 时长（体重取当前 ${(latestWeight() || 0).toFixed(1)}kg），不进摄入账，只进消耗侧影响实际缺口。<br>
+    口径提醒：TDEE 已含「活动系数 1.3（久坐）」的日常活动量，额外运动只应累加<b>超出日常部分</b>；若当日运动量很大、实际缺口已远超目标，吃回来一点是合理的，别硬扛。</div>
+  </div>
+  <div class="card">
+    <h3>目标重算建议</h3>
+    ${needDown ? `<div class="ana" style="border:0;padding:0;margin-top:0">
+      <div class="ana-line">体重降到 ${wNow.toFixed(1)}kg 后，TDEE ≈ ${tdee()} kcal，按缺口 ${st.deficitTarget || 600} 折算，建议把每日目标从 <b>${goal}</b> 调到 <b>${sugGoal}</b> kcal。</div>
+      <div class="ana-line">配套营养素：蛋白 ${sugP}g / 碳水 ${sugC}g / 脂肪 ${sugF}g（按 1.2g/kg 蛋白、0.6g/kg 脂肪、余量碳水）。</div>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="rvApply">按建议重设目标（${sugGoal} kcal）</button></div>`
+      : `<div class="ana" style="border:0;padding:0;margin-top:0"><div class="ana-line">当前目标 ${goal} kcal 与公式建议 ${sugGoal} kcal 基本一致（差 ${Math.abs(goal - sugGoal)} kcal），暂不需要调整。</div></div>`}
+  </div>
+  ${plateau ? `<div class="card" style="border-left:3px solid var(--orange)">
+    <h3>⚠️ 平台期预警</h3>
+    <div class="muted">近两周体重变化不足 0.3kg。建议按平台期决策树逐项排查：①实际摄入是否高于记录 ②脂肪/碳水比例是否失衡 ③水分与睡眠波动 ④是否需要一次 refeed（连续 3 天回到基础代谢）。</div>
+  </div>` : ''}
+  <div class="card">
+    <h3>本周结论与下周动作</h3>
+    <div class="ana" style="border:0;padding:0;margin:0">${sug.map(s => `<div class="ana-line">${s}</div>`).join('')}</div>
   </div>
   <div class="card"><h3>近 14 天热量摄入（绿=达标，橙=超标）</h3><div class="chart-box"><canvas id="cK"></canvas></div></div>
   <div class="card"><h3>体重趋势</h3><div class="chart-box"><canvas id="cW"></canvas></div></div>
@@ -702,6 +789,11 @@ function renderReview(el) {
       <td class="num ${!d.has ? 'muted' : d.kcal <= goal ? 'good' : 'bad'}">${!d.has ? '未记录' : d.kcal <= goal ? '达标 ✓' : '+' + (d.kcal - goal)}</td></tr>`).join('')}
     </table>
   </div>`;
+  const ap = el.querySelector('#rvApply');
+  if (ap) ap.onclick = async () => {
+    st.goalCalories = sugGoal; st.proteinTarget = sugP; st.carbTarget = sugC; st.fatTarget = sugF;
+    await saveFile('settings', st); toast('目标已重设为 ' + sugGoal + ' kcal'); renderView();
+  };
   barChart(el.querySelector('#cK'), days.map(d => d.date), days.map(d => d.kcal), goal);
   lineChart(el.querySelector('#cW'), S.weights.slice(-30).map(x => ({ label: x.date, v: +x.kg })), +S.settings.targetWeight || null);
 }
@@ -875,6 +967,12 @@ document.getElementById('sidebar').addEventListener('click', e => {
   if (!b) return;
   S.view = b.dataset.view; renderView();
 });
+/* hash 路由：支持 #review / #diet 直接进入某页（可收藏、可深链） */
+function readHash() {
+  const v = (location.hash || '').replace('#', '');
+  if (v && VIEWS[v]) S.view = v;
+}
+window.addEventListener('hashchange', () => { readHash(); renderView(); });
 document.getElementById('importNow').onclick = async () => {
   try {
     const r = await api('/api/auto-import', {});
@@ -891,6 +989,7 @@ function doExport() {
 }
 
 (async function boot() {
+  readHash();
   if (SNAPSHOT) { // 手机快照版：数据已内嵌，直接渲染（只读）
     Object.assign(S, window.__SNAPSHOT_DATA__);
     fillDefaults();
