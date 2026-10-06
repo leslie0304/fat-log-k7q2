@@ -1,0 +1,140 @@
+{
+  "records": [
+    {
+      "id": "auto_1006_b1",
+      "meal": "早餐",
+      "name": "牛奶(一碗)",
+      "grams": 250,
+      "kcal": 135,
+      "protein": 8.3,
+      "carb": 12,
+      "fat": 9,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_b2",
+      "meal": "早餐",
+      "name": "黑芝麻(一勺)",
+      "grams": 10,
+      "kcal": 53,
+      "protein": 1.9,
+      "carb": 2.4,
+      "fat": 4.6,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_b3",
+      "meal": "早餐",
+      "name": "核桃仁(三颗)",
+      "grams": 10,
+      "kcal": 65,
+      "protein": 1.5,
+      "carb": 1.4,
+      "fat": 6.5,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_b4",
+      "meal": "早餐",
+      "name": "香蕉(一根)",
+      "grams": 100,
+      "kcal": 90,
+      "protein": 1.3,
+      "carb": 22,
+      "fat": 0.3,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_l1",
+      "meal": "午餐",
+      "name": "荞麦面(熟·两小碗)",
+      "grams": 300,
+      "kcal": 330,
+      "protein": 12,
+      "carb": 63,
+      "fat": 1.8,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_l2",
+      "meal": "午餐",
+      "name": "烧鹅(约五六块·外卖)",
+      "grams": 120,
+      "kcal": 420,
+      "protein": 30,
+      "carb": 3,
+      "fat": 30,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_s1",
+      "meal": "加餐",
+      "name": "八重莓果酪乳冰鲜奶(三分糖·外卖)",
+      "grams": 400,
+      "kcal": 260,
+      "protein": 10,
+      "carb": 34,
+      "fat": 9,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_d1",
+      "meal": "晚餐",
+      "name": "荞麦面(熟·一碗)",
+      "grams": 200,
+      "kcal": 220,
+      "protein": 8,
+      "carb": 42,
+      "fat": 1.2,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_d2",
+      "meal": "晚餐",
+      "name": "鸡胸肉(约120g)",
+      "grams": 120,
+      "kcal": 160,
+      "protein": 31.2,
+      "carb": 1.2,
+      "fat": 3.6,
+      "source": "auto"
+    },
+    {
+      "id": "auto_1006_n1",
+      "meal": "夜宵",
+      "name": "青仁黑豆+鹰嘴豆(20颗)",
+      "grams": 20,
+      "kcal": 60,
+      "protein": 5,
+      "carb": 6,
+      "fat": 1.2,
+      "source": "auto"
+    }
+  ],
+  "photos": [
+    {
+      "file": "0b6d95bab950ecad8b59a0c02c558a4d.jpg",
+      "meal": "早餐"
+    },
+    {
+      "file": "25a4d81aa0cfd775fb1c7369326984bc.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "9a5cd7c8618661c6bdcc4d9853490176.jpg",
+      "meal": "午餐"
+    },
+    {
+      "file": "8d47842af15ddc1cec74e967641cc31c.jpg",
+      "meal": "加餐"
+    },
+    {
+      "file": "cbb3fa2f13b0d72555d56a8f05d14fc9.jpg",
+      "meal": "晚餐"
+    },
+    {
+      "file": "1cd5acd67e39b4df046a2ccef252cf97.jpg",
+      "meal": "晚餐"
+    }
+  ]
+}
