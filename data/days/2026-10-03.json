@@ -262,5 +262,7 @@
       "file": "c8dd30879a2a8b416b48a198d867eccb.jpg",
       "meal": "晚餐"
     }
-  ]
+  ],
+  "water": 1000,
+  "waterNote": "早500 + 晚500"
 }

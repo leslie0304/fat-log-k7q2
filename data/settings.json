@@ -15,5 +15,6 @@
   "fatTarget": 57,
   "activityMinutesTarget": 30,
   "watchDirs": [],
-  "gbWatchDirs": []
+  "gbWatchDirs": [],
+  "waterTarget": 2000
 }

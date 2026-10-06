@@ -285,3 +285,22 @@ canvas { max-width: 100%; }
   .hero-moti { display: none; }   /* 手机端不显示激励图（陛下 08:44 定：窄屏空间有限，只在电脑端展示） */
   .dash-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== 饮水模块（2026-10-06 陛下钦定新增） ===== */
+.m-water .bar > i { background: linear-gradient(90deg, #4aa3df, #7fc4ee); }
+.water-top { display: flex; gap: 12px; margin-bottom: 12px; }
+.water-big { flex: 1; text-align: center; }
+.water-big .have, .water-big .goal {
+  display: flex; flex-direction: column; align-items: center; font-size: 30px; font-weight: 700; line-height: 1.1;
+}
+.water-big .goal { color: #4aa3df; }
+.water-big small { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 4px; }
+.water-quick { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.water-quick input { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
+.water-week { display: flex; gap: 6px; margin-top: 12px; }
+.ww-day { flex: 1; text-align: center; padding: 8px 2px; border-radius: 8px; background: #f4f1e8; }
+.ww-day .d { font-size: 11px; color: var(--muted); }
+.ww-day .v { font-size: 15px; font-weight: 700; }
+.ww-day.ok { background: #dcefe2; } .ww-day.ok .v { color: #2c5a3f; }
+.ww-day.part { background: #fbf0dc; } .ww-day.part .v { color: #b07a1e; }
+.ww-day.none { background: #f4f1e8; } .ww-day.none .v { color: #bbb; }

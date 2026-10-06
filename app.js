@@ -25,9 +25,18 @@ function guessMeal() {
 }
 function dayOf(date) {
   if (!S.days[date]) S.days[date] = { records: [], photos: [] };
-  return S.days[date];
+  const d = S.days[date];
+  if (!Array.isArray(d.records)) d.records = [];
+  if (!Array.isArray(d.photos)) d.photos = [];
+  if (typeof d.water !== 'number') d.water = 0;   // 迁移：旧数据无 water 字段时补 0
+  return d;
 }
 function dayKcal(date) { return dayOf(date).records.reduce((s, r) => s + (+r.kcal || 0), 0); }
+/* 饮水：单位毫升。陛下口述「喝水300」=300ml（数字后不写单位默认毫升） */
+function dayWater(date) { return +dayOf(date).water || 0; }
+function waterTarget() { return +S.settings.waterTarget || 2000; }
+/* 饮水明细（可选，用于「今日饮水」卡点击查看各次记录） */
+function waterLogs(date) { return Array.isArray(dayOf(date).waterLogs) ? dayOf(date).waterLogs : []; }
 function dayMacros(date) {
   const acc = { protein: 0, carb: 0, fat: 0 };
   for (const r of dayOf(date).records) {
@@ -55,7 +64,8 @@ async function api(path, body) {
 }
 async function saveDay(date) {
   const d = dayOf(date);
-  await api('/api/day', { date, records: d.records, photos: d.photos });
+  /* water/waterLogs 必须一起传，否则 /api/day 落盘时会把饮水清零 */
+  await api('/api/day', { date, records: d.records, photos: d.photos, water: +d.water || 0, waterLogs: waterLogs(date) });
 }
 const saveFile = (name, data) => api('/api/save', { file: name, data });
 function toast(msg) {
@@ -88,10 +98,72 @@ function addRecord(name, grams, meal, source, extra) {
   saveDay(S.date).catch(e => toast('保存失败：' + e.message));
   return rec;
 }
+
+/* ============ 饮水 ============ */
+function renderWaterCard(date) {
+  const ml = dayWater(date), tg = waterTarget();
+  const pct = Math.min(100, ml / tg * 100);
+  const left = tg - ml;
+  const logs = waterLogs(date);
+  const quick = [200, 300, 500];
+  return `
+    <div class="water-top">
+      <div class="water-big"><span class="have">${ml}<small>ml 已饮</small></span></div>
+      <div class="water-big"><span class="goal">${tg}<small>ml 目标</small></span></div>
+    </div>
+    <div class="macro m-water"><div class="m-head"><b>饮水进度</b><span>${ml} / ${tg} ml</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>
+    <div class="water-quick">
+      ${quick.map(v => `<button class="chip water-add" data-ml="${v}">+${v}ml</button>`).join('')}
+      <input id="waterCustom" type="number" placeholder="自定义 ml" style="width:88px">
+      <button class="btn" id="waterCustomAdd">记录</button>
+    </div>
+    <div class="ana"><div class="ana-title">饮水分析</div>
+      ${ml === 0 ? '<div class="ana-line">今天还没记饮水。口述「喝水300」或点上方按钮即可；夜间自动整理也会把微信报水一并入账。</div>'
+        : left > 0 ? `<div class="ana-line">还差 <b>${left}</b> ml 达标（约 ${Math.ceil(left / 200)} 杯 · 马克杯 200ml）。</div>`
+        : '<div class="ana-line">✅ 已达标，good。</div>'}
+      ${logs.length ? `<div class="ana-line">记录：${logs.map(l => (l.time ? l.time + ' ' : '') + l.ml + 'ml').join('、')}</div>` : ''}
+    </div>`;
+}
+async function addWater(date, ml, time, note) {
+  const d = dayOf(date);
+  const v = Math.max(0, Math.round(+ml || 0));
+  if (!v) { toast('请输入毫升数'); return; }
+  if (!Array.isArray(d.waterLogs)) d.waterLogs = [];
+  d.waterLogs.push({ ml: v, time: time || nowHM(), note: note || '' });
+  d.water = (+d.water || 0) + v;
+  await saveDay(date);
+  renderView();
+  toast(`已记 ${v}ml · 今日 ${d.water}ml`);
+}
+function setWater(date, ml) {
+  const d = dayOf(date);
+  d.water = Math.max(0, Math.round(+ml || 0));
+  d.waterLogs = [];
+  saveDay(date).catch(e => toast('保存失败：' + e.message));
+  renderView();
+}
+function nowHM() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function bindWaterEvents(el) {
+  el.querySelectorAll('.water-add').forEach(b => b.onclick = () => addWater(S.date, +b.dataset.ml));
+  const wc = el.querySelector('#waterCustom');
+  const wcAdd = el.querySelector('#waterCustomAdd');
+  if (wc && wcAdd) wcAdd.onclick = () => { addWater(S.date, +wc.value); };
+}
+
 function parseText(input) {
   const segs = input.replace(/^.*?(吃了|吃的|今天|晚上|中午|早上)/, '').split(/[、，,;；\n]+/).map(s => s.trim()).filter(Boolean);
   const items = [];
   for (const seg of segs) {
+    /* ★饮水优先识别（2026-10-06 陛下钦定）：喝水300 / 喝水600ml / 早上300毫升 / 300ml
+       一律走饮水通道，不入饮食记录。数字后不写单位默认毫升。 */
+    const wt = seg.match(/^(?:喝水|饮水量|喝|白开水|开水|气泡水|矿泉水)?\s*(\d+(?:\.\d+)?(?:\/[0-9]+)?)\s*(毫升|ml|ML|Ml|升|L|l)?$/);
+    if (wt && !/[个只颗枚片根杯盒勺碗]/.test(seg)) {
+      const q = wt[1].includes('/') ? (Number(wt[1].split('/')[0]) / Number(wt[1].split('/')[1])) : Number(wt[1]);
+      const u = wt[2] ? (wt[2].toLowerCase() === 'l' || wt[2] === '升' ? '升' : '毫升') : '毫升';
+      const ml = u === '升' ? q * 1000 : q;
+      if (ml > 0) items.push({ kind: 'water', ml: Math.round(ml) });
+      continue;
+    }
     let name = seg, grams = null, count = null;
     const m = seg.match(/^(\d+(?:\.\d+)?)(克|g|毫升|ml|ML|Gr)?\s*(.+)$/);
     if (m && m[3]) {
@@ -335,7 +407,7 @@ function renderDash(el) {
     tipTitle = '今天还没记录饮食'; tipBody = '点几个常用食物按钮，或在「饮食营养」页拖入照片，10 秒搞定。';
     tipBtn = '去记录'; tipView = 'diet';
   } else {
-    tipTitle = '今天按节奏推进中'; tipBody = `已摄入 ${kcal} kcal，距目标还余 ${Math.max(0, goal - kcal)} kcal。晚上自动整理会生成简报。`;
+    tipTitle = '今天按节奏推进中'; tipBody = `已摄入 ${kcal} kcal，距目标还余 ${Math.max(0, goal - kcal)} kcal。饮水 ${dayWater(S.date)} ml。`;
     tipBtn = '查看饮食'; tipView = 'diet';
   }
 
@@ -387,6 +459,10 @@ function renderDash(el) {
     </div>
     <div>
       <div class="card">
+        <h3>今日饮水 <span class="link" data-go="settings">目标可在设置页调整 ›</span></h3>
+        ${renderWaterCard(S.date)}
+      </div>
+      <div class="card">
         <h3>身体趋势 <span class="link" data-go="body">查看 ›</span></h3>
         <div class="body-num"><span class="v">${w.toFixed(1)}</span><span class="u">kg 当前体重</span></div>
         <div class="body-sub">
@@ -416,13 +492,15 @@ function renderDash(el) {
   el.querySelector('#heroGo').onclick = () => { S.view = tipView || 'diet'; renderView(); };
   el.querySelectorAll('.link[data-go]').forEach(a => a.onclick = () => { S.view = a.dataset.go; renderView(); });
   el.querySelectorAll('.meal-tab').forEach(b => b.onclick = () => { S.meal = b.dataset.meal; renderDash(el); });
-  el.querySelectorAll('.chip').forEach(b => b.onclick = () => {
+  el.querySelectorAll('.chip[data-food]').forEach(b => b.onclick = () => {
     const f = S.foods[+b.dataset.food];
     addRecord(f.name, f.defaultGrams); toast(`已记录 ${f.name} ${f.defaultGrams}克`); renderView();
   });
+  bindWaterEvents(el);
   const txtAdd = () => {
     const v = el.querySelector('#txtInput').value.trim(); if (!v) return;
-    parseText(v).forEach(it => addRecord(it.name, it.grams));
+    const items = parseText(v);
+    items.filter(i => i.kind !== 'water').forEach(it => addRecord(it.name, it.grams));
     toast('已解析记录'); el.querySelector('#txtInput').value = '';
     saveDay(S.date).then(renderView);
   };
@@ -483,9 +561,13 @@ function renderDiet(el) {
   const txtAdd = () => {
     const v = el.querySelector('#txtInput').value.trim(); if (!v) return;
     const items = parseText(v);
-    items.forEach(it => addRecord(it.name, it.grams));
-    const miss = items.filter(i => !i.ok).length;
-    toast('已记录 ' + items.length + ' 项' + (miss ? `（${miss} 项不在食物库，热量为 0，请手动补）` : ''));
+    const foods = items.filter(i => i.kind !== 'water');
+    const waters = items.filter(i => i.kind === 'water');
+    foods.forEach(it => addRecord(it.name, it.grams));
+    const wml = waters.reduce((s, i) => s + i.ml, 0);
+    if (wml) { const d = dayOf(S.date); d.water = (+d.water || 0) + wml; if (!Array.isArray(d.waterLogs)) d.waterLogs = []; d.waterLogs.push({ ml: wml, time: nowHM(), note: '文字记录' }); }
+    const miss = foods.filter(i => !i.ok).length;
+    toast(`已记录 ${foods.length} 项` + (wml ? ` · 饮水 ${wml}ml` : '') + (miss ? `（${miss} 项不在食物库，热量为 0，请手动补）` : ''));
     el.querySelector('#txtInput').value = '';
     saveDay(S.date).then(renderView);
   };
@@ -716,6 +798,17 @@ function renderReview(el) {
   const w14 = S.weights.filter(x => x.date >= todayStr(new Date(Date.now() - 13 * 86400000)));
   const plateau = w14.length >= 3 && Math.abs(w14[w14.length - 1].kg - w14[0].kg) < 0.3;
 
+  /* ---- 饮水 7 日（2026-10-06 陛下钦定纳入周复盘）---- */
+  const wTarget = waterTarget();
+  let wMl = 0, wDays = 0;
+  const wDetail = last7.map(d => {
+    const ml = S.days[d.date] ? (+S.days[d.date].water || 0) : 0;
+    if (ml > 0) { wMl += ml; wDays++; }
+    return { date: d.date.slice(5), ml };
+  });
+  const wAvg = wDays ? Math.round(wMl / wDays) : 0;
+  const wRate = valid.length ? Math.round(wDetail.filter(x => x.ml >= wTarget).length / n * 100) : 0;
+
   /* ---- 目标重算建议（TDEE 随体重自动下行） ---- */
   const sugGoal = Math.round(tdee() - (+st.deficitTarget || 600));
   const needDown = sugGoal < goal - 20;
@@ -731,6 +824,9 @@ function renderReview(el) {
   if (exMin < exMinTarget) sug.push(`运动 7 日累计 ${exMin} 分钟（目标 ${exMinTarget}），只动了 ${exDays} 天，建议每天快走 20–30 分钟补齐。`);
   else sug.push(`运动 7 日累计 ${exMin} 分钟，已达${exMinTarget} 分钟目标，保持这个节奏。`);
   if (slH && slH < 7) sug.push(`睡眠 7 日均 ${slH.toFixed(1)}h，偏少会拖慢减脂节奏（还会抬高食欲），今晚早点躺。`);
+  if (!wDays) sug.push('本周还没记过饮水。喝水助代谢、压食欲，明天起随手记一笔（微信发「喝水300」或首页点按钮）。');
+  else if (wAvg < wTarget * 0.8) sug.push(`饮水 7 日均 ${wAvg}ml（目标 ${wTarget}ml），还差约 ${Math.round(wTarget - wAvg)}ml/天，约 ${Math.ceil((wTarget - wAvg) / 200)} 杯。`);
+  else sug.push(`饮水 7 日均 ${wAvg}ml，已达目标，保持。`);
   if (plateau) sug.push('⚠️ 近两周体重几乎没变化，建议做一次平台期诊断（核对热量实际值、肌肉量、水分与睡眠）。');
 
   el.innerHTML = `
@@ -762,6 +858,18 @@ function renderReview(el) {
     </div>
     <div class="muted">运动消耗 = MET × 体重 × 时长（体重取当前 ${(latestWeight() || 0).toFixed(1)}kg），不进摄入账，只进消耗侧影响实际缺口。<br>
     口径提醒：TDEE 已含「活动系数 1.3（久坐）」的日常活动量，额外运动只应累加<b>超出日常部分</b>；若当日运动量很大、实际缺口已远超目标，吃回来一点是合理的，别硬扛。</div>
+  </div>
+  <div class="card">
+    <h3>饮水 7 日 <span class="muted">陛下钦定纳入周复盘</span></h3>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="v ${wAvg >= wTarget ? 'good' : wAvg ? 'bad' : ''}">${wDays ? wAvg : '—'}<em>ml</em></div><div class="k">有记录日均（目标${wTarget}）</div></div>
+      <div class="stat-card"><div class="v ${wDays >= 5 ? 'good' : 'bad'}">${wDays}<em>/7</em></div><div class="k">有记录天数</div></div>
+      <div class="stat-card"><div class="v ${wRate >= 70 ? 'good' : ''}">${wRate}<em>%</em></div><div class="k">达标率（≥${wTarget}ml）</div></div>
+      <div class="stat-card"><div class="v">${wMl}<em>ml</em></div><div class="k">本周累计</div></div>
+    </div>
+    <div class="macro m-water"><div class="m-head"><b>日均进度</b><span>${wAvg} / ${wTarget} ml</span></div><div class="bar"><i style="width:${Math.min(100, wAvg / wTarget * 100)}%"></i></div></div>
+    <div class="water-week">${wDetail.map(x => `<div class="ww-day ${x.ml >= wTarget ? 'ok' : x.ml > 0 ? 'part' : 'none'}"><div class="d">${x.date}</div><div class="v">${x.ml || '—'}</div></div>`).join('')}</div>
+    <div class="muted">饮水口径：只计纯水与无糖饮品；含汤、粥、水果里的水按半数估算。心率、血压、减脂效率都受水分影响，达标比纠结数字更重要。</div>
   </div>
   <div class="card">
     <h3>目标重算建议</h3>
@@ -818,6 +926,7 @@ function renderSettings(el) {
       <div class="form-item"><label>碳水目标 g</label><input id="stC" type="number" value="${st.carbTarget}"></div>
       <div class="form-item"><label>脂肪目标 g</label><input id="stF" type="number" value="${st.fatTarget}"></div>
       <div class="form-item"><label>每日活动目标 分钟</label><input id="stMin" type="number" value="${st.activityMinutesTarget}"></div>
+      <div class="form-item"><label>每日饮水目标 ml</label><input id="stWater" type="number" value="${+st.waterTarget || 2000}"></div>
     </div>
     <div class="muted" style="margin:10px 0">BMR ≈ ${bmr} kcal（Mifflin-St Jeor）· TDEE ≈ ${t} kcal · 公式建议目标 = TDEE − 600 ≈ <b>${t - 600}</b> kcal</div>
     <div class="row"><button class="btn" id="stSave">保存设置</button>
@@ -882,7 +991,8 @@ function renderSettings(el) {
       activity: +g('stAc') || 1.35, targetWeight: +g('stT'),
       goalCalories: +g('stGoal'), deficitTarget: +g('stDef'),
       proteinTarget: +g('stP'), carbTarget: +g('stC'), fatTarget: +g('stF'),
-      activityMinutesTarget: +g('stMin') || 30
+      activityMinutesTarget: +g('stMin') || 30,
+      waterTarget: +g('stWater') || 2000
     });
     await saveFile('settings', st); toast('设置已保存'); renderView();
   };
@@ -928,8 +1038,8 @@ const VIEWS = { dash: renderDash, body: renderBody, diet: renderDiet, train: ren
 let _loadingData = null;
 function fillDefaults() {
   if (!S.settings || typeof S.settings !== 'object') S.settings = {};
-  const D = { height: 173, weight: 100, age: 40, activity: 1.35, targetWeight: 75, goalCalories: 1900, deficitTarget: 600, proteinTarget: 120, carbTarget: 215, fatTarget: 57, activityMinutesTarget: 30 };
-  ['height', 'weight', 'age', 'activity', 'targetWeight', 'goalCalories', 'deficitTarget', 'proteinTarget', 'carbTarget', 'fatTarget', 'activityMinutesTarget'].forEach(k => { if (!(k in S.settings)) S.settings[k] = D[k]; });
+  const D = { height: 173, weight: 100, age: 40, activity: 1.35, targetWeight: 75, goalCalories: 1900, deficitTarget: 600, proteinTarget: 120, carbTarget: 215, fatTarget: 57, activityMinutesTarget: 30, waterTarget: 2000 };
+  ['height', 'weight', 'age', 'activity', 'targetWeight', 'goalCalories', 'deficitTarget', 'proteinTarget', 'carbTarget', 'fatTarget', 'activityMinutesTarget', 'waterTarget'].forEach(k => { if (!(k in S.settings)) S.settings[k] = D[k]; });
 }
 async function loadData() {
   try {

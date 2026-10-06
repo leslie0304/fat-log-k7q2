@@ -136,5 +136,14 @@
       "file": "1cd5acd67e39b4df046a2ccef252cf97.jpg",
       "meal": "晚餐"
     }
-  ]
+  ],
+  "water": 1400,
+  "waterLogs": [
+    {
+      "ml": 1400,
+      "time": "补录",
+      "note": "12:26 600 + 20:59 200 + 晚间补报600"
+    }
+  ],
+  "waterNote": ""
 }
