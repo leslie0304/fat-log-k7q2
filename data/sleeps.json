@@ -80,5 +80,28 @@
     "bedtime": "01:01",
     "waketime": "08:20",
     "peakHR": 115
+  },
+  {
+    "date": "2026-10-07",
+    "hours": 4.65,
+    "deepMin": 69,
+    "lightMin": 168,
+    "remMin": 42,
+    "deepPct": 25,
+    "lightPct": 60,
+    "remPct": 15,
+    "awakeCount": 3,
+    "hrv": 60,
+    "restingHr": 69,
+    "spo2": 96,
+    "respRate": 13,
+    "score": 62,
+    "deepContinuity": 86,
+    "breathQuality": 70,
+    "bedtime": "01:27",
+    "waketime": "07:15",
+    "napMin": 51,
+    "quality": 2,
+    "note": "夜间睡眠仅4h39分偏短(参考6-10h)，清醒3次偏高；零星小睡51分钟；16:22另有午睡1小时"
   }
 ]

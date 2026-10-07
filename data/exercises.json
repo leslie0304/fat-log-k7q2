@@ -13,5 +13,23 @@
     "date": "2026-10-05",
     "type": "户外步行",
     "minutes": 46
+  },
+  {
+    "date": "2026-10-06",
+    "type": "户外骑行",
+    "minutes": 8,
+    "kcal": 66,
+    "distanceKm": 1.48,
+    "avgSpeed": 10.72,
+    "source": "手环卡片"
+  },
+  {
+    "date": "2026-10-07",
+    "type": "户外骑行",
+    "minutes": 30,
+    "kcal": 298,
+    "distanceKm": 3.84,
+    "avgSpeed": 7.63,
+    "source": "手环卡片"
   }
 ]
