@@ -103,5 +103,28 @@
     "napMin": 51,
     "quality": 2,
     "note": "夜间睡眠仅4h39分偏短(参考6-10h)，清醒3次偏高；零星小睡51分钟；16:22另有午睡1小时"
+  },
+  {
+    "date": "2026-10-08",
+    "hours": 7.92,
+    "quality": 4,
+    "deepMin": 120,
+    "lightMin": 286,
+    "remMin": 69,
+    "deepPct": 25,
+    "lightPct": 60,
+    "remPct": 15,
+    "awakeCount": 5,
+    "awakePct": 0,
+    "hrv": 38,
+    "restingHr": 82,
+    "spo2": 97,
+    "respRate": 15,
+    "score": 80,
+    "bedtime": "00:10",
+    "waketime": "08:54",
+    "deepContinuity": 73,
+    "breathQuality": 100,
+    "note": "手环卡片：评分80；夜间睡眠7h55m(入睡00:10-醒08:54)；清醒5次偏高(参考0-1次)、浅睡60%偏高；深睡连续性73分、呼吸质量100分；平均环境噪音21dB。quality=4(评分80≥70且≥6.5h)"
   }
 ]
