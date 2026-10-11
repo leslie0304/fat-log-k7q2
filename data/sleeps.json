@@ -126,5 +126,27 @@
     "deepContinuity": 73,
     "breathQuality": 100,
     "note": "手环卡片：评分80；夜间睡眠7h55m(入睡00:10-醒08:54)；清醒5次偏高(参考0-1次)、浅睡60%偏高；深睡连续性73分、呼吸质量100分；平均环境噪音21dB。quality=4(评分80≥70且≥6.5h)"
+  },
+  {
+    "date": "2026-10-09",
+    "hours": 7.4,
+    "quality": 4,
+    "deepMin": 144,
+    "lightMin": 237,
+    "remMin": 83,
+    "deepPct": 32,
+    "lightPct": 49,
+    "remPct": 19,
+    "awakeCount": 1,
+    "hrv": 77,
+    "restingHr": 66,
+    "spo2": 97,
+    "respRate": 13,
+    "score": 85,
+    "deepContinuity": 81,
+    "breathQuality": 80,
+    "bedtime": "00:20",
+    "waketime": "07:44",
+    "note": "手环卡片：评分85；夜间睡眠7h24m(00:20起约7h24m，醒约07:44)；清醒1次；深睡2h24m占32%；HRV77ms、静息心率66、血氧97%、呼吸质量80、深睡连续性81。quality=4(评分85)"
   }
 ]
