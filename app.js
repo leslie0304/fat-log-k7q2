@@ -1,7 +1,7 @@
-/* 轻盈计划 · 减脂健身追踪台 — 前端逻辑 v3（无外部依赖，离线可用） */
+/* 健康大作战 · 健康生活追踪台 — 前端逻辑 v3（无外部依赖，离线可用） */
 'use strict';
 const APP_VERSION = 'v3.0';
-console.log('%c轻盈计划 ' + APP_VERSION, 'color:#2c5a3f;font-weight:bold');
+console.log('%c健康大作战 ' + APP_VERSION, 'color:#2c5a3f;font-weight:bold');
 /* 手机快照模式：页面由 snapshot.js 生成、数据内嵌（window.__SNAPSHOT_DATA__），只读 */
 let SNAPSHOT = typeof window !== 'undefined' && !!window.__SNAPSHOT_DATA__;
 /* 静态托管模式（GitHub Pages 手机版）：boot 探测后置 true，写操作引导走微信 */
@@ -823,7 +823,7 @@ function renderReview(el) {
   if (aF > fT) sug.push(`脂肪 7 日均 ${aF}g，超目标 ${aF - fT}g，明天起换清蒸白灼、少喝汤底。`);
   if (exMin < exMinTarget) sug.push(`运动 7 日累计 ${exMin} 分钟（目标 ${exMinTarget}），只动了 ${exDays} 天，建议每天快走 20–30 分钟补齐。`);
   else sug.push(`运动 7 日累计 ${exMin} 分钟，已达${exMinTarget} 分钟目标，保持这个节奏。`);
-  if (slH && slH < 7) sug.push(`睡眠 7 日均 ${slH.toFixed(1)}h，偏少会拖慢减脂节奏（还会抬高食欲），今晚早点躺。`);
+  if (slH && slH < 7) sug.push(`睡眠 7 日均 ${slH.toFixed(1)}h，偏少会拖慢减重节奏（还会抬高食欲），今晚早点躺。`);
   if (!wDays) sug.push('本周还没记过饮水。喝水助代谢、压食欲，明天起随手记一笔（微信发「喝水300」或首页点按钮）。');
   else if (wAvg < wTarget * 0.8) sug.push(`饮水 7 日均 ${wAvg}ml（目标 ${wTarget}ml），还差约 ${Math.round(wTarget - wAvg)}ml/天，约 ${Math.ceil((wTarget - wAvg) / 200)} 杯。`);
   else sug.push(`饮水 7 日均 ${wAvg}ml，已达目标，保持。`);
@@ -869,7 +869,7 @@ function renderReview(el) {
     </div>
     <div class="macro m-water"><div class="m-head"><b>日均进度</b><span>${wAvg} / ${wTarget} ml</span></div><div class="bar"><i style="width:${Math.min(100, wAvg / wTarget * 100)}%"></i></div></div>
     <div class="water-week">${wDetail.map(x => `<div class="ww-day ${x.ml >= wTarget ? 'ok' : x.ml > 0 ? 'part' : 'none'}"><div class="d">${x.date}</div><div class="v">${x.ml || '—'}</div></div>`).join('')}</div>
-    <div class="muted">饮水口径：只计纯水与无糖饮品；含汤、粥、水果里的水按半数估算。心率、血压、减脂效率都受水分影响，达标比纠结数字更重要。</div>
+    <div class="muted">饮水口径：只计纯水与无糖饮品；含汤、粥、水果里的水按半数估算。心率、血压、代谢都受水分影响，达标比纠结数字更重要。</div>
   </div>
   <div class="card">
     <h3>目标重算建议</h3>
@@ -1104,7 +1104,7 @@ document.getElementById('modalMask').addEventListener('click', e => { if (e.targ
 function doExport() {
   const blob = new Blob([JSON.stringify({ settings: S.settings, foods: S.foods, weights: S.weights, exercises: S.exercises, sleeps: S.sleeps, days: S.days }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = '轻盈计划备份_' + todayStr() + '.json'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = '健康大作战备份_' + todayStr() + '.json'; a.click();
 }
 
 (async function boot() {
