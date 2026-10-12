@@ -1,15 +1,62 @@
 [
   {
-    "date": "2026-10-10",
-    "hours": 7,
+    "date": "2026-10-08",
+    "hours": 6.8,
     "quality": 3,
-    "bedtime": "23:00",
-    "note": "旅游夜23:00入睡(10-11 00:02补记)；次日晨补觉2h至09:00(时长估算)"
+    "score": 80,
+    "deepMin": 120,
+    "lightMin": 286,
+    "wakeCount": 5,
+    "hrv": 38,
+    "restingHr": 82,
+    "spo2": 97,
+    "note": "手环卡(10月8日)：深睡2h+浅睡4h46m，清醒5次；入睡/醒来时刻图上未确认故留空"
+  },
+  {
+    "date": "2026-10-09",
+    "hours": 7.4,
+    "quality": 4,
+    "bedtime": "00:20",
+    "waketime": "07:47",
+    "score": 85,
+    "deepMin": 144,
+    "lightMin": 238,
+    "remMin": 83,
+    "wakeCount": 1,
+    "hrv": 77,
+    "restingHr": 66,
+    "spo2": 97,
+    "note": "手环卡(10月9日)：睡眠时长7h24m，清醒1次，呼吸质量80"
   },
   {
     "date": "2026-10-11",
-    "hours": 2,
+    "hours": 6.2,
     "quality": 3,
-    "note": "晨间补觉2h至09:00(09:08『又睡了2小时到9点』)"
+    "bedtime": "23:33",
+    "waketime": "07:15",
+    "score": 78,
+    "deepMin": 91,
+    "lightMin": 206,
+    "remMin": 70,
+    "wakeCount": 2,
+    "hrv": 80,
+    "restingHr": 65,
+    "spo2": 96,
+    "note": "手环卡(10月11日)：23:33入睡-07:15醒，睡眠6h12m；晨起补觉(自述约2h/手环小睡74分钟)至9:00未计入hours；原『10-10 7h』条目系同一夜，已并入本条避免周均重复计数"
+  },
+  {
+    "date": "2026-10-12",
+    "hours": 8.6,
+    "quality": 4,
+    "bedtime": "23:13",
+    "waketime": "08:09",
+    "score": 85,
+    "deepMin": 129,
+    "lightMin": 289,
+    "remMin": 98,
+    "wakeCount": 2,
+    "hrv": 50,
+    "spo2": 96,
+    "note": "手环卡(10月12日)：23:13入睡-08:09醒，睡眠8h36m；深睡2h9m/浅睡4h49m/REM1h38m；清醒2次；深睡连续性68分偏低；呼吸质量100；平均心率71；深睡占比25%正常；建议减少夜间醒来"
   }
 ]

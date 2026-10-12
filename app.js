@@ -1,7 +1,7 @@
-/* 健康大作战 · 健康生活追踪台 — 前端逻辑 v3（无外部依赖，离线可用） */
+/* 轻盈计划 · 减脂健身追踪台 — 前端逻辑 v3（无外部依赖，离线可用） */
 'use strict';
 const APP_VERSION = 'v3.0';
-console.log('%c健康大作战 ' + APP_VERSION, 'color:#2c5a3f;font-weight:bold');
+console.log('%c轻盈计划 ' + APP_VERSION, 'color:#2c5a3f;font-weight:bold');
 /* 手机快照模式：页面由 snapshot.js 生成、数据内嵌（window.__SNAPSHOT_DATA__），只读 */
 let SNAPSHOT = typeof window !== 'undefined' && !!window.__SNAPSHOT_DATA__;
 /* 静态托管模式（GitHub Pages 手机版）：boot 探测后置 true，写操作引导走微信 */
@@ -383,6 +383,45 @@ function macroAnalysis(kcal, mac, st, goal, exKcal) {
   return out;
 }
 
+/* ============ 健康督促规则（读 data/health_rules.json，按 2026 体检定制） ============ */
+function dietZones(records) {
+  const rules = S.rules && S.rules.diet;
+  if (!rules || !records) return { red: [], yellow: [] };
+  const RED = rules.red.keywords || [], YEL = (rules.yellow && rules.yellow.keywords) || [];
+  const red = [], yellow = [];
+  (records || []).forEach(r => {
+    const n = String(r.name || '');
+    if (RED.some(k => n.includes(k))) { if (!red.includes(n)) red.push(n); }
+    else if (YEL.some(k => n.includes(k))) { if (!yellow.includes(n)) yellow.push(n); }
+  });
+  return { red, yellow };
+}
+function healthTips(date) {
+  const rules = S.rules;
+  if (!rules) return [];
+  const out = [];
+  const day = dayOf(date);
+  const { red, yellow } = dietZones(day.records);
+  if (red.length) out.push({ lv: 'red', text: `🍺 红区餐提醒：今日含「${red.join('、')}」。高嘌呤／高饱和脂肪／果糖／酒精会直接推高 LDL 5.04、尿酸 539、脂肪肝与血压——下一餐用蔬菜＋豆腐/鱼虾＋杂粮补偿，多饮水。` });
+  else if (yellow.length) out.push({ lv: 'warn', text: `🟡 黄区提示：今日含「${yellow.join('、')}」（精制碳水／高果糖／坚果）。不是不能吃，控量即可——主食留一半给杂粮。` });
+  const exToday = (S.exercises || []).filter(e => e.date === date);
+  const exMin = exToday.reduce((s, e) => s + (+e.minutes || 0), 0);
+  const exTarget = +((S.settings || {}).activityMinutesTarget) || 30;
+  const avoid = (rules.exercise && rules.exercise.avoid) || [];
+  const hi = exToday.find(e => avoid.some(k => String(e.name || '').includes(k)));
+  if (hi) out.push({ lv: 'red', text: `⚠️ 记录到高强度运动「${hi.name}」——按当前指标（冠脉钙化＋尿酸高）建议换低冲击：快走／游泳／骑行，量力而行。` });
+  else if (exMin === 0) out.push({ lv: 'warn', text: '🏃 今天还没动：晚上抽 20–30 分钟快走（能说话的强度即可）——降脂、护肝、稳尿酸都靠它。' });
+  else if (exMin < exTarget) out.push({ lv: 'warn', text: `🏃 今日活动 ${exMin}/${exTarget} 分钟——睡前再补 ${exTarget - exMin} 分钟快走即达标。` });
+  else out.push({ lv: 'ok', text: `✅ 今日活动 ${exMin} 分钟已达标，低冲击有氧正是冠脉钙化＋尿酸高的对症运动。` });
+  const sleeps = (S.sleeps || []).slice(-7);
+  if (sleeps.length) {
+    const avg = sleeps.reduce((s, x) => s + (+x.hours || 0), 0) / sleeps.length;
+    if (avg < 6.5) out.push({ lv: 'red', text: `🌙 近 7 日睡眠均 ${avg.toFixed(1)}h——熬夜当晚食欲激素波动≈多吃一顿，红区餐风险翻倍。今晚 23:00 前躺平。` });
+    else if (avg < 7.5) out.push({ lv: 'warn', text: `🌙 近 7 日睡眠均 ${avg.toFixed(1)}h，目标 7.5h+。今晚提前 30 分钟放下手机。` });
+  }
+  return out;
+}
+
 /* ============ 视图：今日总览 ============ */
 function renderDash(el) {
   const st = S.settings, goal = +st.goalCalories || 1900;
@@ -487,6 +526,10 @@ function renderDash(el) {
         <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
       </div>
     </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>🩺 健康督促 · 按体检指标定制 <span class="link" data-go="review">每周复盘 ›</span></h3>
+    ${healthTips(S.date).map(t => `<div class="ana-line" style="${t.lv === 'red' ? 'color:#b3261e;font-weight:600' : t.lv === 'warn' ? 'color:#9a5b00' : 'color:#2c7a4b'}">${t.text}</div>`).join('') || '<div class="muted">健康规则库加载中（data/health_rules.json）…</div>'}
   </div>`;
 
   el.querySelector('#heroGo').onclick = () => { S.view = tipView || 'diet'; renderView(); };
@@ -1050,12 +1093,13 @@ async function loadData() {
     // 本地服务不可达（电脑关机/手机访问 GitHub Pages）→ 静态托管模式：直接拉取发布在云端的 JSON
     const base = 'data/';
     const J = async f => fetch(base + f).then(r => { if (!r.ok) throw new Error(f + ' HTTP ' + r.status); return r.json(); });
-    const [settings, days, foods, weights, exercises, sleeps] = await Promise.all([
+    const [settings, days, foods, weights, exercises, sleeps, labs, health_rules] = await Promise.all([
       J('settings.json'), J('all-days.json'),
       J('foods.json').catch(() => []), J('weights.json').catch(() => []),
-      J('exercises.json').catch(() => []), J('sleeps.json').catch(() => [])
+      J('exercises.json').catch(() => []), J('sleeps.json').catch(() => []),
+      J('labs.json').catch(() => []), J('health_rules.json').catch(() => [])
     ]);
-    Object.assign(S, { settings, days: days || {}, foods: foods || [], weights: weights || [], exercises: exercises || [], sleeps: sleeps || [] });
+    Object.assign(S, { settings, days: days || {}, foods: foods || [], weights: weights || [], exercises: exercises || [], sleeps: sleeps || [], labs: labs || [], rules: health_rules || [] });
     STATIC_MODE = true;
     fillDefaults();
   }
@@ -1104,7 +1148,7 @@ document.getElementById('modalMask').addEventListener('click', e => { if (e.targ
 function doExport() {
   const blob = new Blob([JSON.stringify({ settings: S.settings, foods: S.foods, weights: S.weights, exercises: S.exercises, sleeps: S.sleeps, days: S.days }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = '健康大作战备份_' + todayStr() + '.json'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = '轻盈计划备份_' + todayStr() + '.json'; a.click();
 }
 
 (async function boot() {

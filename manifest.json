@@ -1,7 +1,7 @@
 {
-  "name": "健康大作战 · 健康生活追踪台",
-  "short_name": "健康大作战",
-  "description": "健康大作战·健康生活追踪台手机版（只读，饮食·运动·睡眠数据每晚自动更新）",
+  "name": "轻盈计划 · 减脂工作台",
+  "short_name": "轻盈计划",
+  "description": "减脂追踪工作台手机版（只读，数据每晚自动更新）",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -1,0 +1,27 @@
+{
+  "comment": "体检化验档案（仁济医院健康管理中心）。targets 为工作台监控阈值（Task#17 指标模块用）。LDL 目标按中高危 <2.6 设（已有冠脉钙化+颈动脉内膜毛糙证据）；尿酸目标 <420（男，有心脑血管危险因素应更严）。",
+  "targets": {
+    "ldl": 2.6, "tc": 5.2, "tg": 1.7, "hdl_min": 1.0, "nonHdl": 3.4,
+    "uric": 420, "alt": 50, "sbp": 130, "dbp": 85, "waist": 90, "weight": 75,
+    "plt": 350
+  },
+  "records": [
+    {
+      "date": "2024-08-10", "source": "仁济医院 体检号9605152520", "age": 38,
+      "tc": 5.88, "ldl": 4.16, "hdl": 1.11, "tg": 1.53, "nonHdl": 4.77,
+      "uric": 518, "alt": 45, "ast": 21, "ggt": 41, "fbg": 5.34,
+      "sbp": 117, "dbp": 82, "plt": 282,
+      "fattyLiver": true, "carotid": null, "coronaryCalc": null,
+      "notes": "脂肪肝(B超)；血脂异常(TC/LDL/非HDL↑)；尿酸518↑；ALT 45 贴上限"
+    },
+    {
+      "date": "2026-09-16", "source": "仁济医院 体检号9605592097", "age": 40,
+      "tc": 6.67, "ldl": 5.04, "hdl": 1.06, "tg": 1.82, "nonHdl": 5.61,
+      "uric": 539, "alt": 53.4, "ast": 32.2, "ggt": 37, "fbg": 4.89, "hba1c": 5.3, "hsCRP": 2.18, "hcy": 10.7,
+      "sbp": 138, "dbp": 86, "plt": 356,
+      "fattyLiver": true, "carotid": "双侧颈动脉内膜毛糙, IMT 0.6mm, 未见斑块", "coronaryCalc": true,
+      "lungCT": "右肺中叶及下叶斑点灶(随访)",
+      "notes": "脂肪肝(B超+CT)；血脂全面恶化 LDL 5.04；尿酸539↑；ALT 53.4↑；血压正常高值 138/86；血小板356↑；冠脉走行区钙化=亚临床动脉粥样硬化"
+    }
+  ]
+}
