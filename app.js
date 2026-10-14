@@ -38,14 +38,21 @@ function waterTarget() { return +S.settings.waterTarget || 2000; }
 /* 饮水明细（可选，用于「今日饮水」卡点击查看各次记录） */
 function waterLogs(date) { return Array.isArray(dayOf(date).waterLogs) ? dayOf(date).waterLogs : []; }
 function dayMacros(date) {
-  const acc = { protein: 0, carb: 0, fat: 0 };
+  const acc = { protein: 0, carb: 0, fat: 0, fiber: 0 };
   for (const r of dayOf(date).records) {
-    if (r.protein != null) { acc.protein += +r.protein || 0; acc.carb += +r.carb || 0; acc.fat += +r.fat || 0; continue; }
+    if (r.protein != null) {
+      acc.protein += +r.protein || 0; acc.carb += +r.carb || 0; acc.fat += +r.fat || 0;
+      if (r.fiber != null) acc.fiber += +r.fiber || 0;
+      else { const f = S.foods.find(x => x.name === r.name); if (f) acc.fiber += (+f.fiber || 0) * r.grams / 100; }
+      continue;
+    }
     const f = S.foods.find(x => x.name === r.name);
-    if (f) { acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; }
+    if (f) { acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; acc.fiber += (+f.fiber || 0) * r.grams / 100; }
   }
-  return { protein: Math.round(acc.protein), carb: Math.round(acc.carb), fat: Math.round(acc.fat) };
+  return { protein: Math.round(acc.protein), carb: Math.round(acc.carb), fat: Math.round(acc.fat), fiber: Math.round(acc.fiber * 10) / 10 };
 }
+/* 膳食纤维每日目标（克）：读规则库，兜底 25g（《中国居民膳食指南》2022 成人推荐量） */
+function fiberTarget() { return +((S.rules && S.rules.fiber && S.rules.fiber.targetG)) || 25; }
 function latestWeight() { return S.weights.length ? +S.weights[S.weights.length - 1].kg : +S.settings.weight || 100; }
 function avg7() {
   const ws = S.weights.slice(-7).map(w => +w.kg);
@@ -380,6 +387,11 @@ function macroAnalysis(kcal, mac, st, goal, exKcal) {
   if (mac.fat > fT * 1.15) out.push(`脂肪已超 ${mac.fat - fT}g：今天剩的几餐避开油炸、肥肉和浓汤底`);
   else if (mac.fat > fT) out.push(`脂肪略超（+${mac.fat - fT}g），问题不大`);
   else out.push(`脂肪在轨道内（${mac.fat}/${fT}g）`);
+  const fiberT = fiberTarget();
+  if (mac.fiber < fiberT * 0.6) out.push(`膳食纤维缺口大（${mac.fiber}/${fiberT}g）：早餐换燕麦、主食留一半杂粮、蔬菜吃到 500g——可溶性纤维正是降 LDL 5.04 的利器`);
+  else if (mac.fiber < fiberT * 0.8) out.push(`膳食纤维偏少（${mac.fiber}/${fiberT}g）：下午加餐来个苹果/猕猴桃，或一小把鹰嘴豆`);
+  else if (mac.fiber >= fiberT) out.push(`膳食纤维已达标（${mac.fiber}/${fiberT}g）✓ 降脂稳糖护肠道`);
+  else out.push(`膳食纤维接近达标（${mac.fiber}/${fiberT}g），再添一份杂粮/蔬菜即可`);
   return out;
 }
 
@@ -404,6 +416,11 @@ function healthTips(date) {
   const { red, yellow } = dietZones(day.records);
   if (red.length) out.push({ lv: 'red', text: `🍺 红区餐提醒：今日含「${red.join('、')}」。高嘌呤／高饱和脂肪／果糖／酒精会直接推高 LDL 5.04、尿酸 539、脂肪肝与血压——下一餐用蔬菜＋豆腐/鱼虾＋杂粮补偿，多饮水。` });
   else if (yellow.length) out.push({ lv: 'warn', text: `🟡 黄区提示：今日含「${yellow.join('、')}」（精制碳水／高果糖／坚果）。不是不能吃，控量即可——主食留一半给杂粮。` });
+  const fiberT = fiberTarget();
+  const fib = dayMacros(date).fiber;
+  if (fib > 0 && fib < fiberT * 0.6) out.push({ lv: 'warn', text: `🥬 今日膳食纤维仅 ${fib}g（目标 ${fiberT}g）：早餐换燕麦、主食掺一半杂粮、蔬菜吃够 500g——可溶性纤维降 LDL，不可溶性稳血糖增饱腹。` });
+  else if (fib > 0 && fib < fiberT) out.push({ lv: 'warn', text: `🥬 膳食纤维 ${fib}/${fiberT}g，还差 ${Math.round(fiberT - fib)}g：加餐来个水果或一小把鹰嘴豆即可补齐。` });
+  else if (fib >= fiberT) out.push({ lv: 'ok', text: `🥬 膳食纤维 ${fib}g 已达标 ✓ 降脂稳糖护肠道。` });
   const exToday = (S.exercises || []).filter(e => e.date === date);
   const exMin = exToday.reduce((s, e) => s + (+e.minutes || 0), 0);
   const exTarget = +((S.settings || {}).activityMinutesTarget) || 30;
@@ -484,6 +501,7 @@ function renderDash(el) {
         <div class="macro m-protein"><div class="m-head"><b>蛋白质</b><span>${mac.protein} / ${st.proteinTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.protein / (+st.proteinTarget || 120) * 100)}%"></i></div></div>
         <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div></div>
         <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div></div>
+        <div class="macro m-fiber"><div class="m-head"><b>膳食纤维</b><span>${mac.fiber} / ${fiberTarget()}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fiber / fiberTarget() * 100)}%"></i></div></div>
         <div class="ana"><div class="ana-title">今日摄入分析</div>${macroAnalysis(kcal, mac, st, goal, exKcal).map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
       </div>
       <div class="card">
@@ -816,12 +834,15 @@ function renderReview(el) {
   const wNow = latestWeight();
 
   /* ---- 三大营养素 7 日均值与达标率 ---- */
-  let sP = 0, sC = 0, sF = 0;
-  valid.forEach(d => { const m = dayMacros(d.date); sP += m.protein; sC += m.carb; sF += m.fat; });
+  let sP = 0, sC = 0, sF = 0, sFb = 0;
+  valid.forEach(d => { const m = dayMacros(d.date); sP += m.protein; sC += m.carb; sF += m.fat; sFb += m.fiber; });
   const aP = Math.round(sP / n), aC = Math.round(sC / n), aF = Math.round(sF / n);
+  const fiberT = fiberTarget();
+  const aFb = Math.round(sFb / n * 10) / 10;
   const rP = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).protein >= pT * 0.9).length / n * 100) : 0;
   const rC = valid.length ? Math.round(valid.filter(d => { const m = dayMacros(d.date); return m.carb >= cT * 0.5 && m.carb <= cT; }).length / n * 100) : 0;
   const rF = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).fat <= fT).length / n * 100) : 0;
+  const rFb = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).fiber >= fiberT).length / n * 100) : 0;
 
   /* ---- 运动 7 日：累计分钟 + MET 折算消耗（目标 = 设置里的每日活动目标 × 7，下限兜 WHO 150） ---- */
   const exMinTarget = Math.max(150, (+st.activityMinutesTarget || 30) * 7);
@@ -864,6 +885,9 @@ function renderReview(el) {
   if (aP < pT * 0.9) sug.push(`蛋白 7 日均 ${aP}g（目标 ${pT}g），每天补一份鸡蛋 / 无糖酸奶 / 鱼虾最省事。`);
   if (aC < cT * 0.5) sug.push(`碳水 7 日均 ${aC}g 偏低，长期过低会乏力掉发，主食别省。`);
   if (aF > fT) sug.push(`脂肪 7 日均 ${aF}g，超目标 ${aF - fT}g，明天起换清蒸白灼、少喝汤底。`);
+  if (aFb < fiberT * 0.6) sug.push(`纤维 7 日均仅 ${aFb}g（目标 ${fiberT}g）——把早餐固定为燕麦、主食掺一半杂粮、每餐先吃蔬菜，一周就能拉到 20g 以上；可溶性纤维正是降 LDL 的利器。`);
+  else if (aFb < fiberT) sug.push(`纤维 7 日均 ${aFb}g（目标 ${fiberT}g），再添一份杂粮或一份水果即可达标。`);
+  else sug.push(`纤维 7 日均 ${aFb}g 已达标 ✓ 降脂稳糖护肠道，继续保持。`);
   if (exMin < exMinTarget) sug.push(`运动 7 日累计 ${exMin} 分钟（目标 ${exMinTarget}），只动了 ${exDays} 天，建议每天快走 20–30 分钟补齐。`);
   else sug.push(`运动 7 日累计 ${exMin} 分钟，已达${exMinTarget} 分钟目标，保持这个节奏。`);
   if (slH && slH < 7) sug.push(`睡眠 7 日均 ${slH.toFixed(1)}h，偏少会拖慢减重节奏（还会抬高食欲），今晚早点躺。`);
@@ -889,6 +913,7 @@ function renderReview(el) {
     <div class="macro m-protein"><div class="m-head"><b>蛋白 7 日均</b><span>${aP} / ${pT} g · 达标率 ${rP}%</span></div><div class="bar"><i style="width:${Math.min(100, aP / pT * 100)}%"></i></div></div>
     <div class="macro m-carb"><div class="m-head"><b>碳水 7 日均</b><span>${aC} / ${cT} g · 达标率 ${rC}%</span></div><div class="bar"><i style="width:${Math.min(100, aC / cT * 100)}%"></i></div></div>
     <div class="macro m-fat"><div class="m-head"><b>脂肪 7 日均</b><span>${aF} / ${fT} g · 达标率 ${rF}%</span></div><div class="bar"><i style="width:${Math.min(100, aF / fT * 100)}%"></i></div></div>
+    <div class="macro m-fiber"><div class="m-head"><b>纤维 7 日均</b><span>${aFb} / ${fiberT} g · 达标率 ${rFb}%</span></div><div class="bar"><i style="width:${Math.min(100, aFb / fiberT * 100)}%"></i></div></div>
   </div>
   <div class="card">
     <h3>运动与睡眠 7 日</h3>
