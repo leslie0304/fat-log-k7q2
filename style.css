@@ -98,7 +98,10 @@ input, select { font-family: inherit; font-size: 14px; }
 }
 .hero-btn:hover { filter: brightness(1.06); }
 
-.dash-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; }
+.dash-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; align-items: stretch; }
+/* 两列底部齐平：列容器改弹性布局，末张卡片吸收剩余高度（内容垂直居中，不留半截空白） */
+.dash-grid > div { display: flex; flex-direction: column; }
+.dash-grid > div > .card:last-child { flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0; }
 .dash-grid .card { margin-bottom: 16px; }
 
 /* 能量卡 */
@@ -305,3 +308,22 @@ canvas { max-width: 100%; }
 .ww-day.ok { background: #dcefe2; } .ww-day.ok .v { color: #2c5a3f; }
 .ww-day.part { background: #fbf0dc; } .ww-day.part .v { color: #b07a1e; }
 .ww-day.none { background: #f4f1e8; } .ww-day.none .v { color: #bbb; }
+
+/* ===== 健康科目模块（2026-10-15 全量监控：血压/心率/腰围 + 化验复查） ===== */
+.subj-grid { grid-template-columns: repeat(4, 1fr); }
+.warn { color: #b07a1e; }
+@media (max-width: 760px) { .subj-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ===== 精准营养目标监控 · 格式与上方「今日能量」卡统一（名称+值两端对齐+进度条+间隔） ===== */
+.nutri-list { display: flex; flex-direction: column; gap: 18px; }
+.nutri-gtitle { font-size: 12px; font-weight: 600; color: #8a8574; letter-spacing: .05em; margin-bottom: 10px; }
+.nutri-item { margin-bottom: 14px; }
+.nutri-item:last-child { margin-bottom: 0; }
+.nutri-row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 13px; margin-bottom: 7px; }
+.nutri-row b { font-weight: 600; }
+.nutri-row .nv em { font-style: normal; color: var(--muted); font-size: 12px; }
+.nutri-item.bad .nv, .nutri-item.bad .nv em { color: var(--orange); }
+.nutri-item .bar > i { background: var(--green-mid); }
+.nutri-item.bad .bar > i { background: var(--orange); }
+table.nutri-tbl { margin-top: 4px; font-size: 13px; }
+table.nutri-tbl tr.grp td { background: var(--green-soft); color: var(--green-deep); font-weight: 700; text-align: left; font-size: 12.5px; }

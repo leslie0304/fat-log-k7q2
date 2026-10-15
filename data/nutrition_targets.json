@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "精准固定营养目标",
+    "height": 173,
+    "idealWeightKg": 68,
+    "basis": "陛下钦定 2026-10-15（173cm｜理想68kg），结合体检聚簇（LDL 5.04 + 尿酸 539 + 脂肪肝 + 冠脉钙化 + 颈动脉毛糙 + 血压138/86）定制。各标准锚《中国居民膳食指南2022》/中国血脂管理指南/膳食参考摄入量(DRIs)。",
+    "skipKeys": ["energy", "protein", "carb", "fat", "fiber", "waterPlain", "waterTotal"],
+    "note": "实际摄入按当日饮食×食物成分库自动累加（食物库为初始估算版，以包装标签/权威库校正为准）。★精简口径（陛下2026-10-15）：删除维持性/一般不易缺乏/需化验才有意义之科目，仅留对当前血脂+心血管+血压+尿酸+减脂核心矛盾直接相关的科目。上方能量五样与饮水已在别卡显示，本卡不再重复（skipKeys）。"
+  },
+  "groups": [
+    {
+      "cat": "宏量营养素 · 控脂核心",
+      "items": [
+        { "key": "sugar", "name": "添加糖", "unit": "g/天", "max": 25, "target": "≤25 g", "dir": "max", "auto": true, "note": "杜绝甜饮、奶茶、精制甜点" },
+        { "key": "satFat", "name": "饱和脂肪", "unit": "g/天", "max": 12.7, "target": "≤12.7 g（<总热量6%）", "dir": "max", "auto": true, "note": "严控肥肉/黄油/奶油/肥牛/奶油蛋糕" },
+        { "key": "epaDha", "name": "EPA+DHA", "unit": "mg/天", "min": 250, "max": 500, "target": "250–500 mg", "dir": "range", "auto": true, "note": "深海鱼/鱼油，降甘油三酯·抗炎·护冠脉" },
+        { "key": "betaGlucan", "name": "β-葡聚糖", "unit": "g/天", "min": 3, "target": "≥3 g", "dir": "min", "auto": true, "note": "燕麦米、大麦仁，降LDL核心靶点" },
+        { "key": "anthocyanin", "name": "花青素", "unit": "mg/天", "min": 50, "max": 200, "target": "50–200 mg（观测）", "dir": "range", "auto": true, "note": "深色浆果/紫薯/桑葚/紫甘蓝/黑枸杞；抗炎·改善血管内皮·轻度降压" },
+        { "key": "ala", "name": "α-亚麻酸(ALA)", "unit": "g/天", "min": 1, "max": 2, "target": "1–2 g（观测）", "dir": "range", "auto": true, "note": "植物性Omega-3；亚麻籽/奇亚籽/核桃" }
+      ]
+    },
+    {
+      "cat": "矿物质 · 血压/心血管",
+      "items": [
+        { "key": "magnesium", "name": "镁", "unit": "mg/d", "min": 380, "max": 420, "target": "380–420 mg", "dir": "range", "auto": true, "note": "利放松神经/改善睡眠/血管内皮" },
+        { "key": "potassium", "name": "钾", "unit": "mg/d", "min": 3300, "max": 3600, "target": "3300–3600 mg", "dir": "range", "auto": true, "note": "多菌菇/绿叶菜/薯类/番茄" },
+        { "key": "sodium", "name": "钠", "unit": "mg/d", "max": 2000, "target": "≤2000 mg（盐≈5g）", "dir": "max", "auto": true, "note": "含全部隐形盐（外卖往往超标）" }
+      ]
+    },
+    {
+      "cat": "条件营养素",
+      "items": [
+        { "key": "waterPlain", "name": "纯白开水", "unit": "ml/天", "min": 2000, "max": 2400, "target": "2000–2400 ml", "dir": "range", "auto": true, "note": "少量多次喝" },
+        { "key": "waterTotal", "name": "总水分", "unit": "ml/天", "min": 2800, "max": 3200, "target": "2800–3200 ml（食物+饮水）", "dir": "range", "auto": false, "note": "手动估算：食物含水 + 纯水" }
+      ]
+    },
+    {
+      "cat": "红线",
+      "items": [
+        { "key": "cholesterol", "name": "膳食胆固醇", "unit": "", "target": "不卡死；内脏/蟹黄/肥肉仅极少量", "dir": "redline", "auto": true, "note": "控制饱和脂肪优先级更高" }
+      ]
+    }
+  ]
+}

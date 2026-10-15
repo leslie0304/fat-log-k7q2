@@ -37,19 +37,98 @@ function dayWater(date) { return +dayOf(date).water || 0; }
 function waterTarget() { return +S.settings.waterTarget || 2000; }
 /* 饮水明细（可选，用于「今日饮水」卡点击查看各次记录） */
 function waterLogs(date) { return Array.isArray(dayOf(date).waterLogs) ? dayOf(date).waterLogs : []; }
+/* 微量营养素字段（per100g），用于营养目标实际摄入自动累加 */
+const NUTRI_FIELDS = ['satFat', 'sugar', 'epaDha', 'transFat', 'vitC', 'vitD', 'folate', 'b12', 'k2', 'calcium', 'magnesium', 'potassium', 'sodium', 'selenium', 'zinc', 'iron', 'choline', 'betaGlucan', 'phytosterol', 'anthocyanin', 'ala'];
+function recNutri(rec, field) {
+  if (rec[field] != null) return +rec[field] || 0;
+  const f = S.foods.find(x => x.name === rec.name);
+  return f ? (+f[field] || 0) * rec.grams / 100 : 0;
+}
 function dayMacros(date) {
   const acc = { protein: 0, carb: 0, fat: 0, fiber: 0 };
+  NUTRI_FIELDS.forEach(f => acc[f] = 0);
   for (const r of dayOf(date).records) {
     if (r.protein != null) {
       acc.protein += +r.protein || 0; acc.carb += +r.carb || 0; acc.fat += +r.fat || 0;
       if (r.fiber != null) acc.fiber += +r.fiber || 0;
       else { const f = S.foods.find(x => x.name === r.name); if (f) acc.fiber += (+f.fiber || 0) * r.grams / 100; }
-      continue;
+    } else {
+      const f = S.foods.find(x => x.name === r.name);
+      if (f) { acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; acc.fiber += (+f.fiber || 0) * r.grams / 100; }
     }
-    const f = S.foods.find(x => x.name === r.name);
-    if (f) { acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; acc.fiber += (+f.fiber || 0) * r.grams / 100; }
+    NUTRI_FIELDS.forEach(f => acc[f] += recNutri(r, f));
   }
-  return { protein: Math.round(acc.protein), carb: Math.round(acc.carb), fat: Math.round(acc.fat), fiber: Math.round(acc.fiber * 10) / 10 };
+  acc.protein = Math.round(acc.protein);
+  acc.carb = Math.round(acc.carb);
+  acc.fat = Math.round(acc.fat);
+  acc.fiber = Math.round(acc.fiber * 10) / 10;
+  NUTRI_FIELDS.forEach(f => acc[f] = Math.round(acc[f] * 10) / 10);
+  return acc;
+}
+/* ---------- 精准营养目标监控（对照 data/nutrition_targets.json，2026-10-15 钦定全量监控） ---------- */
+function nutriTargetAll() { const n = S.nutri || S.nutrition_targets; return (n && n.groups) ? n.groups : []; }
+/* 已在别处显示的科目，营养卡与周复盘表内一律不再重复：
+   上方「今日能量」卡已含 能量/蛋白/碳水/脂肪/纤维；右侧「今日饮水」卡已含 饮水/总水分 */
+const NUTRI_SKIP = ['energy', 'protein', 'carb', 'fat', 'fiber', 'waterPlain', 'waterTotal'];
+function nutriSkipKeys() {
+  const n = S.nutri || S.nutrition_targets;
+  const k = (n && n.meta && n.meta.skipKeys) || [];
+  return k.length ? k : NUTRI_SKIP;
+}
+function nutriGroupsFiltered() {
+  const sk = nutriSkipKeys();
+  return nutriTargetAll()
+    .map(g => ({ cat: g.cat, items: g.items.filter(it => !sk.includes(it.key)) }))
+    .filter(g => g.items.length);
+}
+function nutriVal(key, date) {
+  if (key === 'energy') return dayKcal(date);
+  if (key === 'waterPlain') return Math.round(dayWater(date));
+  if (key === 'waterTotal') return null;
+  const m = dayMacros(date);
+  return (key in m) ? m[key] : null;
+}
+function nutriStatus(item, val) {
+  if (item.dir === 'redline') return '';
+  if (val == null) return '';
+  if (item.min != null && item.max != null) return (val >= item.min && val <= item.max) ? 'good' : 'bad';
+  if (item.min != null) return val >= item.min ? 'good' : 'bad';
+  if (item.max != null) return val <= item.max ? 'good' : 'bad';
+  return '';
+}
+function nutriFmt(item, val) {
+  if (val == null) return '—';
+  if (item.unit === 'ml/天') return Math.round(val) + ' ml';
+  if (item.unit === '') return (val > 0 ? '有' : '无');
+  return Math.round(val * 10) / 10 + ' ' + item.unit.replace('/天', '').replace('mg/d', 'mg');
+}
+/* 进度条宽度：上限型对 max，下限/区间型对（max ?? min）取比例 */
+function nutriBarW(item, val) {
+  if (val == null || val <= 0) return 0;
+  const cap = item.max != null ? +item.max : (item.min != null ? +item.min : 0);
+  if (!cap) return 0;
+  return Math.min(100, Math.round(val / cap * 1000) / 10);
+}
+function renderNutriCard(date) {
+  const groups = nutriGroupsFiltered();
+  /* 今日尚未记账时，实际摄入一律显示「—」且不标红：不是吃得不对，是根本没记 */
+  const noLog = !dayOf(date).records.length;
+  const blocks = groups.map(g => {
+    const rows = g.items.map(it => {
+      const val = nutriVal(it.key, date);
+      const st = noLog ? '' : nutriStatus(it, val);
+      const cls = st === 'bad' ? ' bad' : '';
+      const valTxt = noLog ? '—' : (it.dir === 'redline' ? (val > 0 ? '今日有记录' : '—') : nutriFmt(it, val));
+      const barW = (noLog || it.dir === 'redline' || val == null) ? 0 : nutriBarW(it, val);
+      return `<div class="nutri-item${cls}">
+        <div class="nutri-row"><b>${it.name}</b><span class="nv">${valTxt}<em> / ${it.target}</em></span></div>
+        ${it.dir === 'redline' ? '' : `<div class="bar"><i style="width:${barW}%"></i></div>`}
+      </div>`;
+    }).join('');
+    return `<div class="nutri-group"><div class="nutri-gtitle">${g.cat}</div>${rows}</div>`;
+  }).join('');
+  return `
+  <div class="nutri-list">${blocks}</div>`;
 }
 /* 膳食纤维每日目标（克）：读规则库，兜底 25g（《中国居民膳食指南》2022 成人推荐量） */
 function fiberTarget() { return +((S.rules && S.rules.fiber && S.rules.fiber.targetG)) || 25; }
@@ -155,6 +234,116 @@ function bindWaterEvents(el) {
   const wc = el.querySelector('#waterCustom');
   const wcAdd = el.querySelector('#waterCustomAdd');
   if (wc && wcAdd) wcAdd.onclick = () => { addWater(S.date, +wc.value); };
+}
+
+/* ============ 健康科目（血压/心率/腰围 + 化验复查，2026-10-15 全量监控） ============
+ * 科目与标准出自 data/labs.json targets + data/health_rules.json（2026-09 仁济体检定制）：
+ * 血压<130/85 · 腰围<90cm · LDL<2.6 · TC<5.2 · TG<1.7 · HDL≥1.0 · 尿酸<420 · ALT<50 · 体重75kg
+ * 家庭日测（血压/心率/腰围）落 data/metrics.json；化验复查并入 data/labs.json records。 */
+const LAB_KEYS = [
+  { k: 'ldl', name: 'LDL-C', unit: 'mmol/L', dir: 'low' },
+  { k: 'tc', name: '总胆固醇', unit: 'mmol/L', dir: 'low' },
+  { k: 'tg', name: '甘油三酯', unit: 'mmol/L', dir: 'low' },
+  { k: 'hdl', name: 'HDL-C', unit: 'mmol/L', dir: 'high' },
+  { k: 'uric', name: '尿酸', unit: 'µmol/L', dir: 'low' },
+  { k: 'alt', name: 'ALT', unit: 'U/L', dir: 'low' },
+  { k: 'fbg', name: '空腹血糖', unit: 'mmol/L', dir: 'low' }
+];
+function labsTargets() {
+  const l = S.labs;
+  const t = (l && !Array.isArray(l) && l.targets) ? l.targets : {};
+  const out = Object.assign({ sbp: 130, dbp: 85, waist: 90, fbg: 5.6, hdl: 1.0 }, t);
+  if (t.hdl_min && !t.hdl) out.hdl = t.hdl_min;   // labs.json 里 HDL 目标字段叫 hdl_min
+  return out;
+}
+function latestLab(k) {
+  const l = S.labs;
+  const recs = (l && !Array.isArray(l) && Array.isArray(l.records)) ? l.records : (Array.isArray(l) ? l : []);
+  for (let i = recs.length - 1; i >= 0; i--) if (recs[i][k] != null) return { v: +recs[i][k], date: recs[i].date };
+  return null;
+}
+function labStatus(k, v) {
+  const t = labsTargets()[k];
+  if (!t || v == null) return '';
+  const key = LAB_KEYS.find(x => x.k === k);
+  const ok = key && key.dir === 'high' ? v >= t : v < t;
+  return ok ? 'good' : 'bad';
+}
+function metricsOf(date) { return (S.metrics || []).filter(m => m.date === date); }
+function latestMetric(date) {
+  const arr = (S.metrics || []).filter(m => m.date <= date && (m.sbp || m.waist || m.hr));
+  return arr.length ? arr[arr.length - 1] : null;
+}
+function bpGrade(sbp, dbp) {
+  if (sbp == null) return '';
+  if (sbp >= 140 || dbp >= 90) return 'bad';   // 就诊线
+  if (sbp >= 130 || dbp >= 85) return 'warn';  // 目标线
+  return 'good';
+}
+function renderSubjectCard(date) {
+  const t = labsTargets();
+  const today = metricsOf(date).find(x => x.sbp || x.waist || x.hr) || null;
+  const recent = latestMetric(date) || {};
+  const shown = today || recent;
+  const g = bpGrade(shown && shown.sbp, shown && shown.dbp);
+  const bpTxt = shown && shown.sbp ? `${shown.sbp}/${shown.dbp}` : null;
+  const bpCls = g === 'good' ? 'good' : g === 'bad' ? 'bad' : 'warn';
+  const waist = shown && shown.waist ? +shown.waist : null;
+  const hr = shown && shown.hr ? +shown.hr : null;
+  const line = [];
+  if (bpTxt) line.push(`血压 <b class="${bpCls}">${bpTxt}</b> mmHg（目标 <130/85${g === 'bad' ? ' · 已超就诊线，连续≥140/90 请就医' : g === 'warn' ? ' · 正常高值，限盐+快走压下来' : ' · 达标 ✓'}）`);
+  if (hr) line.push(`静息心率 <b>${hr}</b> 次/分`);
+  if (waist) line.push(`腰围 <b class="${waist >= (t.waist || 90) ? 'bad' : 'good'}">${waist}</b> cm（目标 <${t.waist || 90}）`);
+  return `
+  <div class="form-grid subj-grid">
+    <div class="form-item"><label>收缩压</label><input id="sbpIn" type="number" placeholder="mmHg" value="${today && today.sbp || ''}"></div>
+    <div class="form-item"><label>舒张压</label><input id="dbpIn" type="number" placeholder="mmHg" value="${today && today.dbp || ''}"></div>
+    <div class="form-item"><label>心率</label><input id="hrIn" type="number" placeholder="次/分" value="${today && today.hr || ''}"></div>
+    <div class="form-item"><label>腰围 cm</label><input id="waistIn" type="number" step="0.5" placeholder="cm" value="${today && today.waist || ''}"></div>
+  </div>
+  <div class="row"><button class="btn" id="subjAdd">记录今日科目</button><span class="muted">留空的项不记录 · 同日重复记以最新为准</span></div>
+  <div class="ana"><div class="ana-title">科目状态</div>
+    ${line.length ? line.map(x => `<div class="ana-line">${x}</div>`).join('') : '<div class="ana-line">今天还没录血压/腰围。晨起静息 5 分钟后测血压最准；腰围脐上一周量一次即可。</div>'}
+  </div>
+  <details style="margin-top:6px">
+    <summary style="cursor:pointer;font-weight:600">🧪 化验复查录入（血脂/尿酸/ALT/血糖）</summary>
+    <div class="form-grid subj-grid" style="margin-top:8px">
+      <div class="form-item"><label>项目</label><select id="labKey">${LAB_KEYS.map(x => `<option value="${x.k}">${x.name}</option>`).join('')}</select></div>
+      <div class="form-item"><label>数值</label><input id="labVal" type="number" step="0.01" placeholder="${LAB_KEYS[0].unit}"></div>
+      <div class="form-item"><label>日期</label><input id="labDate" type="date" value="${date}"></div>
+      <div class="form-item"><label>&nbsp;</label><button class="btn" id="labAdd">录入</button></div>
+    </div>
+    <div class="muted">化验结果出来随手录一笔，值并入 labs.json 复查档案，周复盘自动对照目标。</div>
+  </details>`;
+}
+function bindSubjectEvents(el) {
+  const add = el.querySelector('#subjAdd');
+  if (add) add.onclick = async () => {
+    const g = id => el.querySelector('#' + id).value;
+    const sbp = +g('sbpIn') || null, dbp = +g('dbpIn') || null, hr = +g('hrIn') || null, waist = +g('waistIn') || null;
+    if (!sbp && !dbp && !hr && !waist) return toast('请至少填一项');
+    if ((sbp || dbp) && !(sbp && dbp)) return toast('血压要收缩压和舒张压一起填');
+    S.metrics = Array.isArray(S.metrics) ? S.metrics : [];
+    let e = S.metrics.find(x => x.date === S.date);
+    if (!e) { e = { date: S.date }; S.metrics.push(e); S.metrics.sort((a, b) => a.date < b.date ? -1 : 1); }
+    if (sbp) e.sbp = sbp; if (dbp) e.dbp = dbp; if (hr) e.hr = hr; if (waist) e.waist = waist;
+    await saveFile('metrics', S.metrics);
+    toast('健康科目已记录'); renderView();
+  };
+  const labAdd = el.querySelector('#labAdd');
+  if (labAdd) labAdd.onclick = async () => {
+    const k = el.querySelector('#labKey').value;
+    const v = parseFloat(el.querySelector('#labVal').value);
+    const dt = el.querySelector('#labDate').value || todayStr();
+    if (!v || !k) return toast('请选项目并填数值');
+    const labs = (S.labs && !Array.isArray(S.labs) && typeof S.labs === 'object') ? S.labs : { targets: {} };
+    if (!Array.isArray(labs.records)) labs.records = [];
+    let rec = labs.records.find(r => r.date === dt);
+    if (!rec) { rec = { date: dt, source: '家庭复查录入' }; labs.records.push(rec); }
+    rec[k] = v;
+    await saveFile('labs', labs);
+    toast('化验值已录入 ' + dt); renderView();
+  };
 }
 
 function parseText(input) {
@@ -430,6 +619,15 @@ function healthTips(date) {
   else if (exMin === 0) out.push({ lv: 'warn', text: '🏃 今天还没动：晚上抽 20–30 分钟快走（能说话的强度即可）——降脂、护肝、稳尿酸都靠它。' });
   else if (exMin < exTarget) out.push({ lv: 'warn', text: `🏃 今日活动 ${exMin}/${exTarget} 分钟——睡前再补 ${exTarget - exMin} 分钟快走即达标。` });
   else out.push({ lv: 'ok', text: `✅ 今日活动 ${exMin} 分钟已达标，低冲击有氧正是冠脉钙化＋尿酸高的对症运动。` });
+  /* 血压/腰围科目督促（metrics.json 当日值） */
+  const mToday = metricsOf(date).find(x => x.sbp || x.waist);
+  if (mToday) {
+    const bg = bpGrade(mToday.sbp, mToday.dbp);
+    if (mToday.sbp && bg === 'bad') out.push({ lv: 'red', text: `🩺 今日血压 ${mToday.sbp}/${mToday.dbp}，已过就诊线：安静 5 分钟后复测；家庭自测连续 ≥140/90 请心内科随诊。` });
+    else if (mToday.sbp && bg === 'warn') out.push({ lv: 'warn', text: `🩺 今日血压 ${mToday.sbp}/${mToday.dbp}，正常高值：今天限盐、晚上快走 30 分钟，明早复测。` });
+    else if (mToday.sbp) out.push({ lv: 'ok', text: `🩺 今日血压 ${mToday.sbp}/${mToday.dbp} 达标 ✓` });
+    if (mToday.waist && mToday.waist >= 90) out.push({ lv: 'warn', text: `📐 今日腰围 ${mToday.waist}cm（目标 <90）：内脏脂肪的主指标，减重是最直接的解药。` });
+  }
   const sleeps = (S.sleeps || []).slice(-7);
   if (sleeps.length) {
     const avg = sleeps.reduce((s, x) => s + (+x.hours || 0), 0) / sleeps.length;
@@ -502,16 +700,10 @@ function renderDash(el) {
         <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div></div>
         <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div></div>
         <div class="macro m-fiber"><div class="m-head"><b>膳食纤维</b><span>${mac.fiber} / ${fiberTarget()}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fiber / fiberTarget() * 100)}%"></i></div></div>
-        <div class="ana"><div class="ana-title">今日摄入分析</div>${macroAnalysis(kcal, mac, st, goal, exKcal).map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
       </div>
       <div class="card">
-        <h3>快速记录 <span class="link" data-go="diet">更多 ›</span></h3>
-        <div class="meal-tabs">${MEALS.map(m => `<button class="meal-tab ${m === S.meal ? 'active' : ''}" data-meal="${m}">${m}</button>`).join('')}</div>
-        <div class="chips">${S.foods.slice(0, 10).map((f, i) => `<button class="chip" data-food="${i}">${esc(f.name)}</button>`).join('')}</div>
-        <div class="text-input-row">
-          <input id="txtInput" placeholder="文字记录，如：250克菠菜、80克水浸金枪鱼、2个鸡蛋">
-          <button class="btn" id="txtAdd">解析</button>
-        </div>
+        <h3>🥗 精准营养目标监控 <span class="link" style="cursor:default">每日目标</span></h3>
+        ${renderNutriCard(S.date)}
       </div>
     </div>
     <div>
@@ -544,29 +736,12 @@ function renderDash(el) {
         <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
       </div>
     </div>
-  </div>
-  <div class="card" style="margin-top:14px">
-    <h3>🩺 健康督促 · 按体检指标定制 <span class="link" data-go="review">每周复盘 ›</span></h3>
-    ${healthTips(S.date).map(t => `<div class="ana-line" style="${t.lv === 'red' ? 'color:#b3261e;font-weight:600' : t.lv === 'warn' ? 'color:#9a5b00' : 'color:#2c7a4b'}">${t.text}</div>`).join('') || '<div class="muted">健康规则库加载中（data/health_rules.json）…</div>'}
   </div>`;
 
   el.querySelector('#heroGo').onclick = () => { S.view = tipView || 'diet'; renderView(); };
   el.querySelectorAll('.link[data-go]').forEach(a => a.onclick = () => { S.view = a.dataset.go; renderView(); });
-  el.querySelectorAll('.meal-tab').forEach(b => b.onclick = () => { S.meal = b.dataset.meal; renderDash(el); });
-  el.querySelectorAll('.chip[data-food]').forEach(b => b.onclick = () => {
-    const f = S.foods[+b.dataset.food];
-    addRecord(f.name, f.defaultGrams); toast(`已记录 ${f.name} ${f.defaultGrams}克`); renderView();
-  });
   bindWaterEvents(el);
-  const txtAdd = () => {
-    const v = el.querySelector('#txtInput').value.trim(); if (!v) return;
-    const items = parseText(v);
-    items.filter(i => i.kind !== 'water').forEach(it => addRecord(it.name, it.grams));
-    toast('已解析记录'); el.querySelector('#txtInput').value = '';
-    saveDay(S.date).then(renderView);
-  };
-  el.querySelector('#txtAdd').onclick = txtAdd;
-  el.querySelector('#txtInput').onkeydown = e => { if (e.key === 'Enter') txtAdd(); };
+  bindSubjectEvents(el);
   el.querySelectorAll('img[data-open]').forEach(im => im.onclick = () => window.open(im.dataset.open, '_blank'));
 }
 
@@ -844,6 +1019,38 @@ function renderReview(el) {
   const rF = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).fat <= fT).length / n * 100) : 0;
   const rFb = valid.length ? Math.round(valid.filter(d => dayMacros(d.date).fiber >= fiberT).length / n * 100) : 0;
 
+  /* ---- 上周（前 7 天）均值：用于各大营养素趋势对比 ---- */
+  const prevValid = days.slice(0, 7).filter(d => d.has);
+  const pn = prevValid.length || 1;
+  const pm = prevValid.length ? prevValid.reduce((a, d) => { const m = dayMacros(d.date); a.p += m.protein; a.c += m.carb; a.f += m.fat; a.fb += m.fiber; return a; }, { p: 0, c: 0, f: 0, fb: 0 }) : null;
+  const aP2 = pm ? Math.round(pm.p / pn) : null, aC2 = pm ? Math.round(pm.c / pn) : null, aF2 = pm ? Math.round(pm.f / pn) : null, aFb2 = pm ? Math.round(pm.fb / pn * 10) / 10 : null;
+  const trendTxt = (cur, prev) => prev == null ? '上周无记录，暂无对比' : cur > prev * 1.05 ? `较上周（${prev}g）↑ 上升` : cur < prev * 0.95 ? `较上周（${prev}g）↓ 下降` : `与上周（${prev}g）→ 持平`;
+  const macTrend = [
+    `蛋白 ${aP}g/日均（目标 ${pT}g，达标率 ${rP}%）——${trendTxt(aP, aP2)}。${aP >= pT * 0.9 ? '保肌肉达标，是减脂期不掉代谢的关键 ✓' : '缺口是本周主矛盾：每天固定加 1 份鸡蛋/无糖酸奶/鱼虾最省事。'}`,
+    `碳水 ${aC}g/日均（目标 ${cT}g，区间达标率 ${rC}%）——${trendTxt(aC, aC2)}。${aC < cT * 0.5 ? '长期过低会乏力掉发，主食别省。' : aC > cT ? '超了：下一餐主食减半，优先杂粮。' : '在轨道内 ✓'}`,
+    `脂肪 ${aF}g/日均（目标 ${fT}g，达标率 ${rF}%）——${trendTxt(aF, aF2)}。${aF > fT ? '超标的脂肪最直接推高 LDL：换清蒸白灼、少碰油炸与浓汤底。' : '在轨道内 ✓ 油以植物油为主，控总量。'}`,
+    `纤维 ${aFb}g/日均（目标 ${fiberT}g，达标率 ${rFb}%）——${trendTxt(aFb, aFb2)}。${aFb >= fiberT ? '达标 ✓ 可溶性纤维正是降 LDL 的利器。' : aFb >= fiberT * 0.6 ? '再添一份杂粮/水果即可达标。' : '缺口大：早餐固定燕麦、主食掺一半杂粮、每餐先吃蔬菜。'}`
+  ];
+  /* ---- 精准营养目标 7 日均（对照 nutrition_targets，2026-10-15 钦定全量监控） ---- */
+  const nutriGroups = nutriGroupsFiltered();
+  const nutriKeys = [];
+  nutriGroups.forEach(g => g.items.forEach(it => nutriKeys.push(it)));
+  const nAcc = {}; nutriKeys.forEach(it => nAcc[it.key] = 0);
+  valid.forEach(d => {
+    const m = dayMacros(d.date);
+    const wml = S.days[d.date] ? (+S.days[d.date].water || 0) : 0;
+    nutriKeys.forEach(it => {
+      let v = null;
+      if (it.key === 'energy') v = dayKcal(d.date);
+      else if (it.key === 'waterPlain') v = wml;
+      else if (it.key === 'waterTotal') v = null;
+      else v = m[it.key];
+      if (v != null) nAcc[it.key] += +v;
+    });
+  });
+  const nutri7 = {};
+  nutriKeys.forEach(it => nutri7[it.key] = n ? ((it.key === 'phytosterol') ? Math.round(nAcc[it.key] / n) : Math.round(nAcc[it.key] / n * 10) / 10) : null);
+
   /* ---- 运动 7 日：累计分钟 + MET 折算消耗（目标 = 设置里的每日活动目标 × 7，下限兜 WHO 150） ---- */
   const exMinTarget = Math.max(150, (+st.activityMinutesTarget || 30) * 7);
   let exMin = 0, exK = 0, exDays = 0;
@@ -914,6 +1121,20 @@ function renderReview(el) {
     <div class="macro m-carb"><div class="m-head"><b>碳水 7 日均</b><span>${aC} / ${cT} g · 达标率 ${rC}%</span></div><div class="bar"><i style="width:${Math.min(100, aC / cT * 100)}%"></i></div></div>
     <div class="macro m-fat"><div class="m-head"><b>脂肪 7 日均</b><span>${aF} / ${fT} g · 达标率 ${rF}%</span></div><div class="bar"><i style="width:${Math.min(100, aF / fT * 100)}%"></i></div></div>
     <div class="macro m-fiber"><div class="m-head"><b>纤维 7 日均</b><span>${aFb} / ${fiberT} g · 达标率 ${rFb}%</span></div><div class="bar"><i style="width:${Math.min(100, aFb / fiberT * 100)}%"></i></div></div>
+    <div class="ana"><div class="ana-title">各大营养素 7 日趋势分析（本周 vs 上周）</div>${macTrend.map(t => `<div class="ana-line">${t}</div>`).join('')}</div>
+  </div>
+  <div class="card">
+    <h3>🥗 精准营养目标 7 日达成对照 <span class="muted">实际摄入 vs 目标（自动算）</span></h3>
+    <table class="nutri-tbl">
+      <tr><th>科目</th><th>7 日均</th><th>目标</th><th>状态</th></tr>
+      ${nutriGroups.map(g => `<tr class="grp"><td colspan="4">${g.cat}</td></tr>` + g.items.map(it => {
+        const v = nutri7[it.key];
+        const st = nutriStatus(it, v);
+        const stTxt = st === 'good' ? '达标 ✓' : st === 'bad' ? (it.dir === 'min' ? '不足' : it.dir === 'max' ? '超标' : '偏离') : '—';
+        return `<tr><td>${it.name}</td><td class="num">${it.dir === 'redline' ? '—' : nutriFmt(it, v)}</td><td class="num">${it.target}</td><td class="num ${st}">${stTxt}</td></tr>`;
+      }).join('')).join('')}
+    </table>
+    <div class="muted">本表只列上方没重复的科目：能量/蛋白/碳水/脂肪/纤维已在「三大营养素 7 日趋势」卡展开，饮水见「饮水 7 日」卡，此处不再重复。食物库为初始估算版，以包装标签校正为准。</div>
   </div>
   <div class="card">
     <h3>运动与睡眠 7 日</h3>
@@ -1113,18 +1334,22 @@ async function loadData() {
   try {
     const j = await api('/api/data');
     Object.assign(S, j.data);
+    /* 键名规范化：服务端返回 health_rules / nutrition_targets，前端按 S.rules / S.nutri 读取 */
+    if (j.data.health_rules) S.rules = j.data.health_rules;
+    if (j.data.nutrition_targets) S.nutri = j.data.nutrition_targets;
     fillDefaults();
   } catch (e) {
     // 本地服务不可达（电脑关机/手机访问 GitHub Pages）→ 静态托管模式：直接拉取发布在云端的 JSON
     const base = 'data/';
     const J = async f => fetch(base + f).then(r => { if (!r.ok) throw new Error(f + ' HTTP ' + r.status); return r.json(); });
-    const [settings, days, foods, weights, exercises, sleeps, labs, health_rules] = await Promise.all([
+    const [settings, days, foods, weights, exercises, sleeps, labs, health_rules, metrics, nutrition_targets] = await Promise.all([
       J('settings.json'), J('all-days.json'),
       J('foods.json').catch(() => []), J('weights.json').catch(() => []),
       J('exercises.json').catch(() => []), J('sleeps.json').catch(() => []),
-      J('labs.json').catch(() => []), J('health_rules.json').catch(() => [])
+      J('labs.json').catch(() => []), J('health_rules.json').catch(() => []),
+      J('metrics.json').catch(() => []), J('nutrition_targets.json').catch(() => [])
     ]);
-    Object.assign(S, { settings, days: days || {}, foods: foods || [], weights: weights || [], exercises: exercises || [], sleeps: sleeps || [], labs: labs || [], rules: health_rules || [] });
+    Object.assign(S, { settings, days: days || {}, foods: foods || [], weights: weights || [], exercises: exercises || [], sleeps: sleeps || [], labs: labs || [], rules: health_rules || [], metrics: metrics || [], nutri: nutrition_targets || [] });
     STATIC_MODE = true;
     fillDefaults();
   }
@@ -1171,7 +1396,7 @@ document.getElementById('importNow').onclick = async () => {
 document.getElementById('exportBtn').onclick = doExport;
 document.getElementById('modalMask').addEventListener('click', e => { if (e.target.id === 'modalMask') closeModal(); });
 function doExport() {
-  const blob = new Blob([JSON.stringify({ settings: S.settings, foods: S.foods, weights: S.weights, exercises: S.exercises, sleeps: S.sleeps, days: S.days }, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ settings: S.settings, foods: S.foods, weights: S.weights, exercises: S.exercises, sleeps: S.sleeps, metrics: S.metrics || [], days: S.days }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = '轻盈计划备份_' + todayStr() + '.json'; a.click();
 }
