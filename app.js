@@ -31,7 +31,14 @@ function dayOf(date) {
   if (typeof d.water !== 'number') d.water = 0;   // 迁移：旧数据无 water 字段时补 0
   return d;
 }
-function dayKcal(date) { return dayOf(date).records.reduce((s, r) => s + (+r.kcal || 0), 0); }
+/* ★2026-10-16修正：r.kcal 缺失时回退库值计算（跑批 auto 记录只对直存项写 kcal，
+   鸡蛋/菠菜/酸奶等走库值的记录若不补字段会被 dayKcal 整条漏算——实测少算 440kcal/天） */
+function dayKcal(date) { return Math.round(dayOf(date).records.reduce((s, r) => {
+  const direct = +r.kcal || 0;
+  if (direct) return s + direct;
+  const f = findFood(r.name);
+  return s + (f ? recKcal(f, r.grams) : 0);
+}, 0)); }
 /* 饮水：单位毫升。陛下口述「喝水300」=300ml（数字后不写单位默认毫升） */
 function dayWater(date) { return +dayOf(date).water || 0; }
 function waterTarget() { return +S.settings.waterTarget || 2000; }
