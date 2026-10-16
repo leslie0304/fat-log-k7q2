@@ -37,32 +37,61 @@ function dayWater(date) { return +dayOf(date).water || 0; }
 function waterTarget() { return +S.settings.waterTarget || 2000; }
 /* 饮水明细（可选，用于「今日饮水」卡点击查看各次记录） */
 function waterLogs(date) { return Array.isArray(dayOf(date).waterLogs) ? dayOf(date).waterLogs : []; }
-/* 微量营养素字段（per100g），用于营养目标实际摄入自动累加 */
-const NUTRI_FIELDS = ['satFat', 'sugar', 'epaDha', 'transFat', 'vitC', 'vitD', 'folate', 'b12', 'k2', 'calcium', 'magnesium', 'potassium', 'sodium', 'selenium', 'zinc', 'iron', 'choline', 'betaGlucan', 'phytosterol', 'anthocyanin', 'ala'];
+/* 微量营养素字段（per100g），用于营养目标实际摄入自动累加。cholesterol 2026-10-16 补入：让「膳食胆固醇」红线科目可自动统计 */
+const NUTRI_FIELDS = ['satFat', 'sugar', 'epaDha', 'transFat', 'cholesterol', 'vitC', 'vitD', 'folate', 'b12', 'k2', 'calcium', 'magnesium', 'potassium', 'sodium', 'selenium', 'zinc', 'iron', 'choline', 'betaGlucan', 'phytosterol', 'anthocyanin', 'ala'];
+/* 记录名 → 库内食物：四级匹配（精确 → 别名表 → 去括号基名相等 → 双向包含）。
+   2026-10-15 修：跑批写入的记录名带后缀（"脱脂牛奶(1碗)"、"农科院即食燕麦片(单袋·冲泡)"），
+   旧精确匹配 13/14 条落空 → 微量营养素全按 0 计，营养卡满屏 0。 */
+const FOOD_ALIAS = { '蔬菜沙拉': '绿叶蔬菜(混合)' };
+function baseName(n) { return String(n || '').replace(/[（(].*$/, '').trim(); }
 function recNutri(rec, field) {
   if (rec[field] != null) return +rec[field] || 0;
-  const f = S.foods.find(x => x.name === rec.name);
+  const f = findFood(rec.name);
   return f ? (+f[field] || 0) * rec.grams / 100 : 0;
+}
+/* ★添加糖口径（陛下2026-10-16钦定）：只计加工/烹调外加糖；牛奶乳糖、水果果糖等天然糖（sugarType=natural）不计入 */
+function recAddedSugar(rec) {
+  if (rec.sugar != null) {
+    /* ★2026-10-16修正：直存值也分天然/外加——标注 sugarType='natural' 的直存糖不计入添加糖（否则全麦粉/洋葱/燕麦等天然糖被误计为添加糖） */
+    if (rec.sugarType === 'natural') return 0;
+    return +rec.sugar || 0;
+  }
+  const f = findFood(rec.name);
+  if (!f || f.sugarType === 'natural') return 0;
+  return (+f.sugar || 0) * rec.grams / 100;
+}
+/* ★食物归因：某科目今日各项记录贡献明细，按贡献降序（跑批汇报/卡片折叠明细用） */
+function nutriTrace(key, date) {
+  const out = [];
+  for (const r of dayOf(date).records) {
+    const v = key === 'sugar' ? recAddedSugar(r) : recNutri(r, key);
+    if (v > 0.001) out.push({ meal: r.meal, name: r.name, grams: r.grams, val: Math.round(v * 100) / 100 });
+  }
+  return out.sort((a, b) => b.val - a.val);
 }
 function dayMacros(date) {
   const acc = { protein: 0, carb: 0, fat: 0, fiber: 0 };
   NUTRI_FIELDS.forEach(f => acc[f] = 0);
+  let totG = 0, missG = 0; /* 当日记录总重与「库内查无此物」的重量（用于覆盖率判断） */
   for (const r of dayOf(date).records) {
+    totG += +r.grams || 0;
+    const f = findFood(r.name);
+    if (!f && !NUTRI_FIELDS.some(k => r[k] != null)) missG += +r.grams || 0;
     if (r.protein != null) {
       acc.protein += +r.protein || 0; acc.carb += +r.carb || 0; acc.fat += +r.fat || 0;
       if (r.fiber != null) acc.fiber += +r.fiber || 0;
-      else { const f = S.foods.find(x => x.name === r.name); if (f) acc.fiber += (+f.fiber || 0) * r.grams / 100; }
-    } else {
-      const f = S.foods.find(x => x.name === r.name);
-      if (f) { acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; acc.fiber += (+f.fiber || 0) * r.grams / 100; }
+      else if (f) acc.fiber += (+f.fiber || 0) * r.grams / 100;
+    } else if (f) {
+      acc.protein += (+f.protein || 0) * r.grams / 100; acc.carb += (+f.carb || 0) * r.grams / 100; acc.fat += (+f.fat || 0) * r.grams / 100; acc.fiber += (+f.fiber || 0) * r.grams / 100;
     }
-    NUTRI_FIELDS.forEach(f => acc[f] += recNutri(r, f));
+    NUTRI_FIELDS.forEach(fl => acc[fl] += (fl === 'sugar' ? recAddedSugar(r) : recNutri(r, fl)));
   }
   acc.protein = Math.round(acc.protein);
   acc.carb = Math.round(acc.carb);
   acc.fat = Math.round(acc.fat);
   acc.fiber = Math.round(acc.fiber * 10) / 10;
   NUTRI_FIELDS.forEach(f => acc[f] = Math.round(acc[f] * 10) / 10);
+  acc._totG = totG; acc._missG = missG;
   return acc;
 }
 /* ---------- 精准营养目标监控（对照 data/nutrition_targets.json，2026-10-15 钦定全量监控） ---------- */
@@ -86,6 +115,8 @@ function nutriVal(key, date) {
   if (key === 'waterPlain') return Math.round(dayWater(date));
   if (key === 'waterTotal') return null;
   const m = dayMacros(date);
+  /* 当日未收录食物（外卖/新菜/补剂）按重量占比 >30% 时，微量估算失真，宁可显示「—」不报错数 */
+  if (m._totG > 0 && m._missG / m._totG > 0.3) return null;
   return (key in m) ? m[key] : null;
 }
 function nutriStatus(item, val) {
@@ -116,19 +147,31 @@ function renderNutriCard(date) {
   const blocks = groups.map(g => {
     const rows = g.items.map(it => {
       const val = nutriVal(it.key, date);
-      const st = noLog ? '' : nutriStatus(it, val);
+      const st = (noLog || val == null) ? '' : nutriStatus(it, val);
       const cls = st === 'bad' ? ' bad' : '';
       const valTxt = noLog ? '—' : (it.dir === 'redline' ? (val > 0 ? '今日有记录' : '—') : nutriFmt(it, val));
       const barW = (noLog || it.dir === 'redline' || val == null) ? 0 : nutriBarW(it, val);
+      /* ★超标/不足科目折叠明细：直接列出今日哪些食物贡献了多少（陛下2026-10-16要求） */
+      const trace = (!noLog && st === 'bad' && it.dir !== 'redline') ? nutriTrace(it.key, date) : [];
+      const unit = (it.unit || '').replace('/天', '');
+      const traceHtml = trace.length ? `<details class="nutri-trace"><summary>明细（${trace.length} 项）：${trace.slice(0, 4).map(t => `${t.name} ${t.val}`).join('、')}${trace.length > 4 ? '…' : ''}</summary>
+        ${trace.map(t => `<div class="t-row">${t.meal} · ${t.name}（${t.grams}g）→ <b>${t.val}</b>${unit ? ' ' + unit : ''}</div>`).join('')}
+        ${it.key === 'sugar' ? '<div class="t-note">仅计添加糖；牛奶乳糖/水果果糖等天然糖不计入。</div>' : ''}</details>` : '';
       return `<div class="nutri-item${cls}">
         <div class="nutri-row"><b>${it.name}</b><span class="nv">${valTxt}<em> / ${it.target}</em></span></div>
         ${it.dir === 'redline' ? '' : `<div class="bar"><i style="width:${barW}%"></i></div>`}
+        ${traceHtml}
       </div>`;
     }).join('');
     return `<div class="nutri-group"><div class="nutri-gtitle">${g.cat}</div>${rows}</div>`;
   }).join('');
+  /* 未收录食物提示：估算不全时如实说明，不让陛下误读「—」为「真没吃」 */
+  const m0 = dayMacros(date);
+  const missPct = m0._totG > 0 ? Math.round(m0._missG / m0._totG * 100) : 0;
+  const missNote = (!noLog && missPct >= 15)
+    ? `<div class="muted" style="margin-top:10px">今日约 ${missPct}% 重量的食物未收录进食物库（外卖/新菜/补剂），上表为低估；新食物入库后自动算入。</div>` : '';
   return `
-  <div class="nutri-list">${blocks}</div>`;
+  <div class="nutri-list">${blocks}</div>${missNote}`;
 }
 /* 膳食纤维每日目标（克）：读规则库，兜底 25g（《中国居民膳食指南》2022 成人推荐量） */
 function fiberTarget() { return +((S.rules && S.rules.fiber && S.rules.fiber.targetG)) || 25; }
@@ -166,10 +209,25 @@ function calcBMR(st) {
   return Math.round(st.gender === 'female' ? base - 161 : base + 5);
 }
 const tdee = () => Math.round(calcBMR(S.settings) * (+S.settings.activity || 1.35));
-function recKcal(food, grams) { return Math.round((food ? +food.kcal100 : 0) * grams / 100); }
+/* ★kcal 字段兜底（2026-10-16 修）：食物库新旧字段名不一（旧 kcal100 / 新 kcal），
+   只读 kcal100 会让亚麻籽/鱼油等 12 种食物在手动添加或改克数时热量被算成 0。
+   自检脚本 self_check.js 会持续把关两字段名的一致性。 */
+function recKcal(food, grams) { const k = food ? (+food.kcal100 || +food.kcal || 0) : 0; return Math.round(k * grams / 100); }
+/* 记录名 → 库内食物（2026-10-15 增强）：跑批写入的记录名带后缀（"脱脂牛奶(1碗)"），
+   旧版仅双向 includes 大量落空 → 微量营养素全按 0 计。现四级：精确 → 别名表 → 基名相等 → 双向包含。 */
 function findFood(name) {
-  const n = name.trim();
-  return S.foods.find(f => f.name === n) || S.foods.find(f => f.name.includes(n) || n.includes(f.name));
+  const n = String(name || '').trim();
+  if (!n) return null;
+  let f = S.foods.find(x => x.name === n);
+  if (f) return f;
+  const b = baseName(n);
+  if (FOOD_ALIAS[b]) { f = S.foods.find(x => x.name === FOOD_ALIAS[b]); if (f) return f; }
+  f = S.foods.find(x => x.name === b);
+  if (f) return f;
+  f = S.foods.find(x => baseName(x.name) === b);
+  if (f) return f;
+  if (b.length >= 2) f = S.foods.find(x => { const xb = baseName(x.name); return xb.length >= 2 && (b.includes(xb) || xb.includes(b)); });
+  return f || null;
 }
 function addRecord(name, grams, meal, source, extra) {
   if (SNAPSHOT) { toast('手机快照为只读 · 记录请发微信「文件传输助手」，晚上自动整理入账'); return null; }
@@ -1035,21 +1093,24 @@ function renderReview(el) {
   const nutriGroups = nutriGroupsFiltered();
   const nutriKeys = [];
   nutriGroups.forEach(g => g.items.forEach(it => nutriKeys.push(it)));
-  const nAcc = {}; nutriKeys.forEach(it => nAcc[it.key] = 0);
+  const nAcc = {}; const nDays = {}; nutriKeys.forEach(it => { nAcc[it.key] = 0; nDays[it.key] = 0; });
   valid.forEach(d => {
     const m = dayMacros(d.date);
+    /* 当日未收录食物按重量 >30% 时微量不可信，该日不纳入均值（宁缺毋滥） */
+    const missR = m._totG > 0 ? m._missG / m._totG : 0;
     const wml = S.days[d.date] ? (+S.days[d.date].water || 0) : 0;
     nutriKeys.forEach(it => {
       let v = null;
       if (it.key === 'energy') v = dayKcal(d.date);
       else if (it.key === 'waterPlain') v = wml;
       else if (it.key === 'waterTotal') v = null;
+      else if (missR > 0.3) v = null;
       else v = m[it.key];
-      if (v != null) nAcc[it.key] += +v;
+      if (v != null) { nAcc[it.key] += +v; nDays[it.key]++; }
     });
   });
   const nutri7 = {};
-  nutriKeys.forEach(it => nutri7[it.key] = n ? ((it.key === 'phytosterol') ? Math.round(nAcc[it.key] / n) : Math.round(nAcc[it.key] / n * 10) / 10) : null);
+  nutriKeys.forEach(it => nutri7[it.key] = nDays[it.key] ? ((it.key === 'phytosterol') ? Math.round(nAcc[it.key] / nDays[it.key]) : Math.round(nAcc[it.key] / nDays[it.key] * 10) / 10) : null);
 
   /* ---- 运动 7 日：累计分钟 + MET 折算消耗（目标 = 设置里的每日活动目标 × 7，下限兜 WHO 150） ---- */
   const exMinTarget = Math.max(150, (+st.activityMinutesTarget || 30) * 7);

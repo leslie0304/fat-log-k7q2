@@ -30,7 +30,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 2
   },
   {
     "name": "燕麦(干)",
@@ -62,7 +64,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "鸡蛋",
@@ -94,7 +98,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 373
   },
   {
     "name": "黑芝麻",
@@ -126,7 +132,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "核桃仁",
@@ -158,7 +166,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 9.1
+    "ala": 9.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "蓝莓",
@@ -190,7 +200,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 150,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "米饭",
@@ -222,7 +234,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "荞麦面(熟)",
@@ -254,7 +268,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "鸡胸肉",
@@ -286,7 +302,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 58
   },
   {
     "name": "水浸金枪鱼",
@@ -318,7 +336,9 @@
     "epaDha": 300,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 45
   },
   {
     "name": "虾",
@@ -350,7 +370,9 @@
     "epaDha": 200,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 152
   },
   {
     "name": "菠菜",
@@ -382,7 +404,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "无糖希腊酸奶",
@@ -414,7 +438,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 10
   },
   {
     "name": "猕猴桃",
@@ -446,7 +472,10 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "note": "绿心猕猴桃果肉几乎不含花青素（花青素在皮中且量微）；补花青素请选蓝莓/桑葚/紫薯/黑枸杞",
+    "cholesterol": 0
   },
   {
     "name": "鹰嘴豆(熟)",
@@ -478,7 +507,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "青仁黑豆(干)",
@@ -510,7 +541,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 10,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "绿叶蔬菜(混合)",
@@ -542,7 +575,9 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "宫保鸡丁(外卖)",
@@ -574,7 +609,9 @@
     "epaDha": 0,
     "transFat": 0.2,
     "anthocyanin": 0,
-    "ala": 0
+    "ala": 0,
+    "sugarType": "added",
+    "cholesterol": 45
   },
   {
     "name": "香蕉",
@@ -606,17 +643,19 @@
     "epaDha": 0,
     "transFat": 0,
     "anthocyanin": 0,
-    "ala": 0.03
+    "ala": 0.03,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "亚麻籽(干)",
-    "kcal": 534,
+    "kcal100": 534,
     "protein": 18.3,
     "carb": 28.9,
     "fat": 42.2,
     "fiber": 27.3,
     "unit": "g",
-    "unitGrams": 10,
+    "unitGrams": 1,
     "defaultGrams": 10,
     "note": "ALA冠军+木酚素；磨粉撒酸奶/燕麦",
     "satFat": 4.5,
@@ -639,17 +678,19 @@
     "betaGlucan": 0,
     "phytosterol": 0.4,
     "anthocyanin": 0,
-    "ala": 22.8
+    "ala": 22.8,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "奇亚籽",
-    "kcal": 486,
+    "kcal100": 486,
     "protein": 16.5,
     "carb": 42.1,
     "fat": 30.7,
     "fiber": 34.4,
     "unit": "g",
-    "unitGrams": 10,
+    "unitGrams": 1,
     "defaultGrams": 10,
     "note": "ALA+钙；泡水或撒入",
     "satFat": 3.3,
@@ -672,17 +713,19 @@
     "betaGlucan": 0,
     "phytosterol": 0.3,
     "anthocyanin": 0,
-    "ala": 17.8
+    "ala": 17.8,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "紫薯",
-    "kcal": 86,
+    "kcal100": 86,
     "protein": 1.6,
     "carb": 20,
     "fat": 0.1,
     "fiber": 3,
     "unit": "g",
-    "unitGrams": 100,
+    "unitGrams": 1,
     "defaultGrams": 150,
     "note": "花青素优质来源；蒸煮替代主食",
     "satFat": 0,
@@ -705,17 +748,19 @@
     "betaGlucan": 0,
     "phytosterol": 0,
     "anthocyanin": 150,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "桑葚",
-    "kcal": 43,
+    "kcal100": 43,
     "protein": 1.4,
     "carb": 9.9,
     "fat": 0.4,
     "fiber": 1.7,
     "unit": "g",
-    "unitGrams": 100,
+    "unitGrams": 1,
     "defaultGrams": 100,
     "note": "花青素高；当季水果",
     "satFat": 0,
@@ -738,17 +783,19 @@
     "betaGlucan": 0,
     "phytosterol": 0,
     "anthocyanin": 180,
-    "ala": 0.05
+    "ala": 0.05,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "紫甘蓝",
-    "kcal": 31,
+    "kcal100": 31,
     "protein": 1.4,
     "carb": 7,
     "fat": 0.2,
     "fiber": 2.1,
     "unit": "g",
-    "unitGrams": 100,
+    "unitGrams": 1,
     "defaultGrams": 100,
     "note": "花青素+维C；凉拌/快炒",
     "satFat": 0,
@@ -771,17 +818,19 @@
     "betaGlucan": 0,
     "phytosterol": 0,
     "anthocyanin": 100,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
   },
   {
     "name": "黑枸杞(干)",
-    "kcal": 250,
+    "kcal100": 250,
     "protein": 12,
     "carb": 53,
     "fat": 5,
     "fiber": 20,
     "unit": "g",
-    "unitGrams": 5,
+    "unitGrams": 1,
     "defaultGrams": 5,
     "note": "干品花青素极高(约2500mg/100g)，每次5-10g泡水或干吃",
     "satFat": 0.5,
@@ -804,6 +853,218 @@
     "betaGlucan": 0,
     "phytosterol": 0,
     "anthocyanin": 2500,
-    "ala": 0.1
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
+  },
+  {
+    "name": "鱼油",
+    "kcal100": 900,
+    "protein": 0,
+    "carb": 0,
+    "fat": 100,
+    "fiber": 0,
+    "unit": "粒",
+    "unitGrams": 1,
+    "defaultGrams": 2,
+    "note": "软胶囊约1g/粒；EPA+DHA按300mg/粒估（包装标签校正为准）",
+    "satFat": 3,
+    "sugar": 0,
+    "epaDha": 30000,
+    "transFat": 0,
+    "vitC": 0,
+    "vitD": 1,
+    "folate": 0,
+    "b12": 0,
+    "k2": 0,
+    "calcium": 0,
+    "magnesium": 0,
+    "potassium": 0,
+    "sodium": 0,
+    "selenium": 0,
+    "zinc": 0,
+    "iron": 0,
+    "choline": 2,
+    "betaGlucan": 0,
+    "phytosterol": 0,
+    "anthocyanin": 0,
+    "ala": 0,
+    "sugarType": "natural",
+    "cholesterol": 0
+  },
+  {
+    "name": "脱脂牛奶",
+    "kcal100": 33,
+    "protein": 3.4,
+    "carb": 5,
+    "fat": 0.2,
+    "fiber": 0,
+    "unit": "克",
+    "unitGrams": 1,
+    "defaultGrams": 250,
+    "note": "陛下2026-10-14起改喝脱脂（原全脂54kcal/3.6g脂肪已弃用）；EPA+DHA≈0（脱脂工艺去除，原误填5已修正）",
+    "satFat": 0.1,
+    "sugar": 4.8,
+    "epaDha": 0.05,
+    "transFat": 0,
+    "vitC": 1,
+    "vitD": 0.1,
+    "folate": 5,
+    "b12": 0.3,
+    "k2": 0.5,
+    "calcium": 110,
+    "magnesium": 10,
+    "potassium": 150,
+    "sodium": 60,
+    "selenium": 1.5,
+    "zinc": 0.3,
+    "iron": 0.1,
+    "choline": 15,
+    "betaGlucan": 0,
+    "phytosterol": 5,
+    "anthocyanin": 0,
+    "ala": 0.02,
+    "sugarType": "natural",
+    "cholesterol": 2
+  },
+  {
+    "name": "玉米粒(甜)",
+    "kcal100": 86,
+    "protein": 3.3,
+    "carb": 19,
+    "fat": 1.2,
+    "fiber": 2.7,
+    "unit": "克",
+    "unitGrams": 1,
+    "defaultGrams": 100,
+    "note": "甜玉米粒；镁钾大户",
+    "satFat": 0.2,
+    "sugar": 6,
+    "epaDha": 0.02,
+    "transFat": 0,
+    "vitC": 6,
+    "vitD": 0,
+    "folate": 30,
+    "b12": 0,
+    "k2": 0.5,
+    "calcium": 2,
+    "magnesium": 37,
+    "potassium": 270,
+    "sodium": 5,
+    "selenium": 0.6,
+    "zinc": 0.5,
+    "iron": 0.5,
+    "choline": 22,
+    "betaGlucan": 0,
+    "phytosterol": 15,
+    "anthocyanin": 0,
+    "ala": 0.03,
+    "sugarType": "natural",
+    "cholesterol": 0
+  },
+  {
+    "name": "洋车前子壳",
+    "kcal100": 15,
+    "protein": 0.2,
+    "carb": 0.5,
+    "fat": 0.1,
+    "fiber": 80,
+    "unit": "克",
+    "unitGrams": 1,
+    "defaultGrams": 5,
+    "note": "每日早晚各1剂(5g)；可溶性纤维主力；注意其为半乳甘露聚糖，不计入β-葡聚糖",
+    "satFat": 0,
+    "sugar": 0,
+    "epaDha": 0,
+    "transFat": 0,
+    "vitC": 0,
+    "vitD": 0,
+    "folate": 10,
+    "b12": 0,
+    "k2": 0,
+    "calcium": 80,
+    "magnesium": 30,
+    "potassium": 200,
+    "sodium": 20,
+    "selenium": 0.5,
+    "zinc": 0.5,
+    "iron": 2,
+    "choline": 10,
+    "betaGlucan": 0,
+    "phytosterol": 20,
+    "anthocyanin": 0,
+    "ala": 0.1,
+    "sugarType": "natural",
+    "cholesterol": 0
+  },
+  {
+    "name": "小笼包(外卖·猪肉)",
+    "kcal100": 220,
+    "protein": 8,
+    "carb": 28,
+    "fat": 8,
+    "fiber": 1.2,
+    "unit": "克",
+    "unitGrams": 1,
+    "defaultGrams": 176,
+    "note": "外卖猪肉小笼；钠按450mg/100g估，实际或更高（隐形盐大头）",
+    "satFat": 3,
+    "sugar": 2,
+    "epaDha": 0.02,
+    "transFat": 0.2,
+    "vitC": 0,
+    "vitD": 0.1,
+    "folate": 8,
+    "b12": 0.3,
+    "k2": 1,
+    "calcium": 15,
+    "magnesium": 20,
+    "potassium": 150,
+    "sodium": 450,
+    "selenium": 4,
+    "zinc": 0.8,
+    "iron": 1.2,
+    "choline": 25,
+    "betaGlucan": 0.2,
+    "phytosterol": 10,
+    "anthocyanin": 0,
+    "ala": 0.05,
+    "sugarType": "added",
+    "cholesterol": 65
+  },
+  {
+    "name": "五黑原浆饮",
+    "kcal100": 45,
+    "protein": 1.5,
+    "carb": 9,
+    "fat": 1,
+    "fiber": 1.5,
+    "unit": "袋",
+    "unitGrams": 30,
+    "defaultGrams": 30,
+    "note": "1袋30ml；黑芝麻/黑豆/黑米/桑葚/黑枸杞类饮品；花青素按100mg/100g粗估（以标签校正）",
+    "satFat": 0.3,
+    "sugar": 5,
+    "epaDha": 0.05,
+    "transFat": 0,
+    "vitC": 3,
+    "vitD": 0,
+    "folate": 8,
+    "b12": 0,
+    "k2": 1,
+    "calcium": 30,
+    "magnesium": 15,
+    "potassium": 120,
+    "sodium": 10,
+    "selenium": 1,
+    "zinc": 0.3,
+    "iron": 1,
+    "choline": 8,
+    "betaGlucan": 0,
+    "phytosterol": 5,
+    "anthocyanin": 100,
+    "ala": 0.1,
+    "sugarType": "added",
+    "cholesterol": 0
   }
 ]
