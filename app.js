@@ -39,6 +39,17 @@ function dayKcal(date) { return Math.round(dayOf(date).records.reduce((s, r) => 
   const f = findFood(r.name);
   return s + (f ? recKcal(f, r.grams) : 0);
 }, 0)); }
+/* ★2026-10-16：运动分钟折算——华为活动卡只给热量不给分钟（10-13/10-16 中招，
+   首页圆环/督促/周复盘只累加 minutes 导致显示 0）。
+   缺 minutes 时按步行 MET3.5×当前体重把热量折成等效分钟；仅展示层折算，不写回数据。 */
+function exMinutes(e, w) {
+  const m = +e.minutes || 0;
+  if (m) return m;
+  const kc = +e.calories || +e.kcal || 0;
+  if (!kc) return 0;
+  const wt = +w || latestWeight() || 80;
+  return Math.round(kc / (3.5 * wt / 60));
+}
 /* 饮水：单位毫升。陛下口述「喝水300」=300ml（数字后不写单位默认毫升） */
 function dayWater(date) { return +dayOf(date).water || 0; }
 function waterTarget() { return +S.settings.waterTarget || 2000; }
@@ -618,6 +629,8 @@ function exBurnKcal(date) {
   const w = latestWeight() || 70;
   let s = 0;
   S.exercises.filter(e => e.date === date).forEach(e => {
+    const kc = +e.calories || +e.kcal || 0;
+    if (kc) { s += kc; return; }   /* 手环卡直存热量（已按6折口径）优先于 MET 重算 */
     const met = EX_MET[e.type] || 4;
     s += met * w * ((+e.minutes || 0) / 60);
   });
@@ -676,7 +689,7 @@ function healthTips(date) {
   else if (fib > 0 && fib < fiberT) out.push({ lv: 'warn', text: `🥬 膳食纤维 ${fib}/${fiberT}g，还差 ${Math.round(fiberT - fib)}g：加餐来个水果或一小把鹰嘴豆即可补齐。` });
   else if (fib >= fiberT) out.push({ lv: 'ok', text: `🥬 膳食纤维 ${fib}g 已达标 ✓ 降脂稳糖护肠道。` });
   const exToday = (S.exercises || []).filter(e => e.date === date);
-  const exMin = exToday.reduce((s, e) => s + (+e.minutes || 0), 0);
+  const exMin = exToday.reduce((s, e) => s + exMinutes(e), 0);
   const exTarget = +((S.settings || {}).activityMinutesTarget) || 30;
   const avoid = (rules.exercise && rules.exercise.avoid) || [];
   const hi = exToday.find(e => avoid.some(k => String(e.name || '').includes(k)));
@@ -707,8 +720,9 @@ function renderDash(el) {
   const st = S.settings, goal = +st.goalCalories || 1900;
   const kcal = dayKcal(S.date), mac = dayMacros(S.date);
   const w = latestWeight();
-  const exMin = S.exercises.filter(e => e.date === S.date).reduce((s, e) => s + (+e.minutes || 0), 0);
+  const exMin = S.exercises.filter(e => e.date === S.date).reduce((s, e) => s + exMinutes(e), 0);
   const exKcal = exBurnKcal(S.date);
+  const exDerived = S.exercises.some(e => e.date === S.date && !(+e.minutes) && (+e.calories || +e.kcal));
   const exTarget = +st.activityMinutesTarget || 30;
   const startDate = S.weights.length ? S.weights[0].date : S.date;
   const planDays = Math.max(1, Math.round((new Date(S.date) - new Date(startDate)) / 86400000) + 1);
@@ -788,11 +802,11 @@ function renderDash(el) {
         <h3>今日活动 <span class="link" data-go="train">记录 ›</span></h3>
         <div class="ring-wrap">
           <div class="ring">${ringSvg(exMin / exTarget * 100, '#e8663c')}
-            <div class="ring-txt"><span class="v">${Math.round(exMin / exTarget * 100)}%</span><span class="k">达成</span></div>
+            <div class="ring-txt"><span class="v">${Math.min(100, Math.round(exMin / exTarget * 100))}%</span><span class="k">达成</span></div>
           </div>
           <div class="ring-side">
             <div class="big">${exMin}<small> / ${exTarget} 分钟</small></div>
-            <div class="sub">${exMin >= exTarget ? '今日活动达标 ✓' : 'BMI≥32 起步建议：快走 / 游泳等低冲击'}</div>
+            <div class="sub">${exMin >= exTarget ? '今日活动达标 ✓' : 'BMI≥32 起步建议：快走 / 游泳等低冲击'}${exDerived ? '（手环活动卡折算）' : ''}${exKcal ? ` · 消耗约 ${exKcal} 千卡` : ''}</div>
           </div>
         </div>
       </div>
@@ -1123,7 +1137,7 @@ function renderReview(el) {
   const exMinTarget = Math.max(150, (+st.activityMinutesTarget || 30) * 7);
   let exMin = 0, exK = 0, exDays = 0;
   last7.forEach(d => {
-    const mins = S.exercises.filter(e => e.date === d.date).reduce((s, e) => s + (+e.minutes || 0), 0);
+    const mins = S.exercises.filter(e => e.date === d.date).reduce((s, e) => s + exMinutes(e), 0);
     if (mins > 0) exDays++;
     exMin += mins; exK += exBurnKcal(d.date);
   });
