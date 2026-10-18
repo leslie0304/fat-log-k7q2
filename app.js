@@ -8,7 +8,7 @@ let SNAPSHOT = typeof window !== 'undefined' && !!window.__SNAPSHOT_DATA__;
 let STATIC_MODE = false;
 
 const MEALS = ['早餐', '午餐', '晚餐', '加餐', '零食'];
-const VIEW_TITLES = { dash: '今日总览', body: '身体趋势', diet: '饮食营养', train: '训练与作息', review: '每周复盘', settings: '设置' };
+const VIEW_TITLES = { dash: '每日总览', body: '身体趋势', diet: '饮食营养', train: '训练与作息', review: '每周复盘', settings: '设置' };
 const S = {
   settings: null, foods: [], weights: [], exercises: [], sleeps: [], days: {},
   pendingImport: 0, view: 'dash', date: todayStr(), meal: guessMeal()
@@ -718,7 +718,7 @@ function healthTips(date) {
   return out;
 }
 
-/* ============ 视图：今日总览 ============ */
+/* ============ 视图：每日总览 ============ */
 function renderDash(el) {
   const st = S.settings, goal = +st.goalCalories || 1900;
   const kcal = dayKcal(S.date), mac = dayMacros(S.date);
