@@ -160,16 +160,19 @@ function nutriBarW(item, val) {
 }
 function renderNutriCard(date) {
   const groups = nutriGroupsFiltered();
-  /* 今日尚未记账时，实际摄入一律显示「—」且不标红：不是吃得不对，是根本没记 */
+  /* ★2026-10-18：总览可翻看历史日期，「今日」字样随 date 走，回看日不误导 */
+  const isToday = date === todayStr();
+  const dayWord = isToday ? '今日' : '该日';
+  /* 当日尚未记账时，实际摄入一律显示「—」且不标红：不是吃得不对，是根本没记 */
   const noLog = !dayOf(date).records.length;
   const blocks = groups.map(g => {
     const rows = g.items.map(it => {
       const val = nutriVal(it.key, date);
       const st = (noLog || val == null) ? '' : nutriStatus(it, val);
       const cls = st === 'bad' ? ' bad' : '';
-      const valTxt = noLog ? '—' : (it.dir === 'redline' ? (val > 0 ? '今日有记录' : '—') : nutriFmt(it, val));
+      const valTxt = noLog ? '—' : (it.dir === 'redline' ? (val > 0 ? dayWord + '有记录' : '—') : nutriFmt(it, val));
       const barW = (noLog || it.dir === 'redline' || val == null) ? 0 : nutriBarW(it, val);
-      /* ★超标/不足科目折叠明细：直接列出今日哪些食物贡献了多少（陛下2026-10-16要求） */
+      /* ★超标/不足科目折叠明细：直接列出当天哪些食物贡献了多少（陛下2026-10-16要求） */
       const trace = (!noLog && st === 'bad' && it.dir !== 'redline') ? nutriTrace(it.key, date) : [];
       const unit = (it.unit || '').replace('/天', '');
       const traceHtml = trace.length ? `<details class="nutri-trace"><summary>明细（${trace.length} 项）：${trace.slice(0, 4).map(t => `${t.name} ${t.val}`).join('、')}${trace.length > 4 ? '…' : ''}</summary>
@@ -187,7 +190,7 @@ function renderNutriCard(date) {
   const m0 = dayMacros(date);
   const missPct = m0._totG > 0 ? Math.round(m0._missG / m0._totG * 100) : 0;
   const missNote = (!noLog && missPct >= 15)
-    ? `<div class="muted" style="margin-top:10px">今日约 ${missPct}% 重量的食物未收录进食物库（外卖/新菜/补剂），上表为低估；新食物入库后自动算入。</div>` : '';
+    ? `<div class="muted" style="margin-top:10px">${dayWord}约 ${missPct}% 重量的食物未收录进食物库（外卖/新菜/补剂），上表为低估；新食物入库后自动算入。</div>` : '';
   return `
   <div class="nutri-list">${blocks}</div>${missNote}`;
 }
@@ -295,7 +298,7 @@ async function addWater(date, ml, time, note) {
   d.water = (+d.water || 0) + v;
   await saveDay(date);
   renderView();
-  toast(`已记 ${v}ml · 今日 ${d.water}ml`);
+  toast(`已记 ${v}ml · ${date === todayStr() ? '今日' : date} ${d.water}ml`);
 }
 function setWater(date, ml) {
   const d = dayOf(date);
@@ -728,19 +731,25 @@ function renderDash(el) {
   const planDays = Math.max(1, Math.round((new Date(S.date) - new Date(startDate)) / 86400000) + 1);
   const hour = new Date().getHours();
   const hello = hour < 11 ? '早上好' : hour < 14 ? '中午好' : hour < 18 ? '下午好' : '晚上好';
+  /* ★2026-10-18：总览支持翻看历史日期——isToday/prev/next/wd 全按 S.date 算，不再默认今天 */
+  const isToday = S.date === todayStr();
+  const base = new Date(S.date + 'T00:00:00');
+  const prev = todayStr(new Date(base.getTime() - 86400000));
+  const next = todayStr(new Date(base.getTime() + 86400000));
+  const wd = '日一二三四五六'[base.getDay()];
 
   let tipTitle, tipBody, tipBtn, tipView;
   if (S.pendingImport > 0) {
     tipTitle = '有新照片待整理'; tipBody = `微信自动采集了 ${S.pendingImport} 张照片，夜间将自动整理。也可现在手动补录。`;
     tipBtn = '查看照片'; tipView = 'diet';
   } else if (!S.weights.some(x => x.date === S.date)) {
-    tipTitle = '补记晨间体重，趋势会更清楚'; tipBody = '每天固定时间称一次（建议晨起空腹），趋势最准。';
+    tipTitle = isToday ? '补记晨间体重，趋势会更清楚' : '该日未记体重'; tipBody = '每天固定时间称一次（建议晨起空腹），趋势最准。';
     tipBtn = '记录体重'; tipView = 'body';
   } else if (kcal === 0) {
-    tipTitle = '今天还没记录饮食'; tipBody = '点几个常用食物按钮，或在「饮食营养」页拖入照片，10 秒搞定。';
+    tipTitle = isToday ? '今天还没记录饮食' : '该日没有饮食记录'; tipBody = '点几个常用食物按钮，或在「饮食营养」页拖入照片，10 秒搞定。';
     tipBtn = '去记录'; tipView = 'diet';
   } else {
-    tipTitle = '今天按节奏推进中'; tipBody = `已摄入 ${kcal} kcal，距目标还余 ${Math.max(0, goal - kcal)} kcal。饮水 ${dayWater(S.date)} ml。`;
+    tipTitle = isToday ? '今天按节奏推进中' : '该日摄入回顾'; tipBody = `已摄入 ${kcal} kcal，距目标还余 ${Math.max(0, goal - kcal)} kcal。饮水 ${dayWater(S.date)} ml。`;
     tipBtn = '查看饮食'; tipView = 'diet';
   }
 
@@ -748,11 +757,16 @@ function renderDash(el) {
   ${SNAPSHOT ? '<div class="todo-strip">📱 手机快照 · 生成于 ' + esc((typeof window !== 'undefined' && window.__SNAPSHOT_TIME__) || '') + ' · 数据截至昨晚跑批。今日记录请发微信「文件传输助手」，晚上自动整理入账。</div>' : ''}
   ${STATIC_MODE ? '<div class="todo-strip" style="background:#f3ead6">📱 手机版（只读）· 数据截至前一晚自动整理。白天记录请发微信「文件传输助手」，晚上电脑自动入账。</div>' : ''}
   ${S.pendingImport > 0 ? `<div class="todo-strip">📥 已自动采集 <b>${S.pendingImport}</b> 张微信照片，今晚 22:30 将自动整理归档；您也可以随时去「饮食营养」页手动补录。</div>` : ''}
+  <div class="date-nav">
+    <button id="dPrev" title="前一天">‹</button><input type="date" id="dDate" value="${S.date}" max="${todayStr()}"><button id="dNext" title="后一天">›</button>
+    <span class="muted">${isToday ? '今天' : esc(S.date)} · 当日总览${isToday ? '' : '（回看）'}</span>
+    ${isToday ? '' : '<button class="btn ghost small" id="dashToday">回到今天</button>'}
+  </div>
   <div class="hero">
     <div class="hero-left">
       <div class="hi">${hello} · 陛下</div>
-      <h1>陛下，今天也按<br>自己的节奏来。</h1>
-      <div class="date">${S.date} · 星期${'日一二三四五六'[new Date().getDay()]}</div>
+      <h1>陛下，${isToday ? '今天' : '这一天'}也按<br>自己的节奏来。</h1>
+      <div class="date">${S.date} · 星期${wd}</div>
       <div class="hero-chips"><span>计划第 ${planDays} 天</span><span>距目标 ${Math.max(0, (w - (+st.targetWeight || 75))).toFixed(1)} kg</span><span>数据在本机 · 不上传</span></div>
     </div>
     <div class="hero-right">
@@ -769,7 +783,7 @@ function renderDash(el) {
   <div class="dash-grid">
     <div>
       <div class="card">
-        <h3>今日能量 <span class="link" data-go="diet">调整可在饮食页 ›</span></h3>
+        <h3>当日能量 <span class="link" data-go="diet">调整可在饮食页 ›</span></h3>
         <div class="energy-top">
           <div class="energy-big"><span class="have">${kcal}<small>kcal 已摄入</small></span></div>
           <div class="energy-big"><span class="goal">${goal}<small>kcal 新参考值</small></span></div>
@@ -787,7 +801,7 @@ function renderDash(el) {
     </div>
     <div>
       <div class="card">
-        <h3>今日饮水 <span class="link" data-go="settings">目标可在设置页调整 ›</span></h3>
+        <h3>当日饮水 <span class="link" data-go="settings">目标可在设置页调整 ›</span></h3>
         ${renderWaterCard(S.date)}
       </div>
       <div class="card">
@@ -799,25 +813,31 @@ function renderDash(el) {
         </div>
       </div>
       <div class="card">
-        <h3>今日活动 <span class="link" data-go="train">记录 ›</span></h3>
+        <h3>当日活动 <span class="link" data-go="train">记录 ›</span></h3>
         <div class="ring-wrap">
           <div class="ring">${ringSvg(exMin / exTarget * 100, '#e8663c')}
             <div class="ring-txt"><span class="v">${Math.min(100, Math.round(exMin / exTarget * 100))}%</span><span class="k">达成</span></div>
           </div>
           <div class="ring-side">
             <div class="big">${exMin}<small> / ${exTarget} 分钟</small></div>
-            <div class="sub">${exMin >= exTarget ? '今日活动达标 ✓' : 'BMI≥32 起步建议：快走 / 游泳等低冲击'}${exDerived ? '（手环活动卡折算）' : ''}${exKcal ? ` · 消耗约 ${exKcal} 千卡` : ''}</div>
+            <div class="sub">${exMin >= exTarget ? (isToday ? '今日活动达标 ✓' : '当日活动达标 ✓') : 'BMI≥32 起步建议：快走 / 游泳等低冲击'}${exDerived ? '（手环活动卡折算）' : ''}${exKcal ? ` · 消耗约 ${exKcal} 千卡` : ''}</div>
           </div>
         </div>
       </div>
       <div class="card">
-        <h3>今日照片 <span class="link" data-go="diet">整理 ›</span></h3>
+        <h3>当日照片 <span class="link" data-go="diet">整理 ›</span></h3>
         <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
       </div>
     </div>
   </div>`;
 
   el.querySelector('#heroGo').onclick = () => { S.view = tipView || 'diet'; renderView(); };
+  /* ★2026-10-18：总览日期翻看（与饮食页 date-nav 同模式，S.date 全局共享） */
+  el.querySelector('#dPrev').onclick = () => { S.date = prev; renderView(); };
+  el.querySelector('#dNext').onclick = () => { if (S.date < todayStr()) { S.date = next; renderView(); } };
+  el.querySelector('#dDate').onchange = e => { S.date = e.target.value || S.date; renderView(); };
+  const dashToday = el.querySelector('#dashToday');
+  if (dashToday) dashToday.onclick = () => { S.date = todayStr(); renderView(); };
   el.querySelectorAll('.link[data-go]').forEach(a => a.onclick = () => { S.view = a.dataset.go; renderView(); });
   bindWaterEvents(el);
   bindSubjectEvents(el);
@@ -1485,6 +1505,9 @@ function doExport() {
 
 (async function boot() {
   readHash();
+  /* ★2026-10-18：支持 ?date=YYYY-MM-DD 深链到指定日期（回看/分享用；不允许未来日期） */
+  const qd = new URLSearchParams(location.search).get('date');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(qd || '') && qd <= todayStr()) S.date = qd;
   if (SNAPSHOT) { // 手机快照版：数据已内嵌，直接渲染（只读）
     Object.assign(S, window.__SNAPSHOT_DATA__);
     fillDefaults();
