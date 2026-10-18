@@ -169,7 +169,10 @@ function renderNutriCard(date) {
     const rows = g.items.map(it => {
       const val = nutriVal(it.key, date);
       const st = (noLog || val == null) ? '' : nutriStatus(it, val);
-      const cls = st === 'bad' ? ' bad' : '';
+      /* ★2026-10-18 陛下钦定：配色参考上方能量卡——达标绿、不足黄(gold)、超标橙红(orange)。
+         不用全局 .bad/.good 类（.bad 会把整块含明细 marker 一起染橙，曾致「全是红的」），
+         改用专用 .under/.over，只染数值与进度条 */
+      const cls = st === 'bad' ? ((it.min != null && val < it.min) ? ' under' : ' over') : '';
       const valTxt = noLog ? '—' : (it.dir === 'redline' ? (val > 0 ? dayWord + '有记录' : '—') : nutriFmt(it, val));
       const barW = (noLog || it.dir === 'redline' || val == null) ? 0 : nutriBarW(it, val);
       /* ★超标/不足科目折叠明细：直接列出当天哪些食物贡献了多少（陛下2026-10-16要求） */

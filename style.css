@@ -322,9 +322,14 @@ canvas { max-width: 100%; }
 .nutri-row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 13px; margin-bottom: 7px; }
 .nutri-row b { font-weight: 600; }
 .nutri-row .nv em { font-style: normal; color: var(--muted); font-size: 12px; }
-.nutri-item.bad .nv, .nutri-item.bad .nv em { color: var(--orange); }
 .nutri-item .bar > i { background: var(--green-mid); }
-.nutri-item.bad .bar > i { background: var(--orange); }
+/* ★2026-10-18 陛下钦定三态配色（参考上方能量卡）：达标绿 / 不足黄 / 超标橙红 */
+.nutri-item.under .nv, .nutri-item.under .nv em { color: var(--gold); }
+.nutri-item.under .bar > i { background: var(--gold); }
+.nutri-item.under .nutri-trace summary { color: var(--gold); }
+.nutri-item.over .nv, .nutri-item.over .nv em { color: var(--orange); }
+.nutri-item.over .bar > i { background: var(--orange); }
+.nutri-item.over .nutri-trace summary { color: var(--orange); }
 /* 超标科目折叠明细（2026-10-16 陛下要求：超了要说是吃了啥） */
 .nutri-trace { margin: 4px 0 2px; font-size: 11.5px; }
 .nutri-trace summary { cursor: pointer; color: var(--muted); font-size: 11px; }
