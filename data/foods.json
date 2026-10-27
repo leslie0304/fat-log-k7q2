@@ -1066,5 +1066,69 @@
     "ala": 0.1,
     "sugarType": "added",
     "cholesterol": 0
+  },
+  {
+    "name": "西兰花",
+    "kcal100": 34, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 2.8, "carb": 7, "fat": 0.4, "fiber": 2.6, "satFat": 0.1, "sugar": 1.7,
+    "vitC": 89, "vitD": 0, "folate": 63, "b12": 0, "k2": 0, "calcium": 47, "magnesium": 21, "potassium": 316, "sodium": 33, "selenium": 0.6, "zinc": 0.4, "iron": 0.7, "choline": 19,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.05, "sugarType": "natural", "cholesterol": 0,
+    "note": "十字花科；维C与叶酸高，低卡高纤"
+  },
+  {
+    "name": "香菇(鲜)",
+    "kcal100": 27, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 2.2, "carb": 5.2, "fat": 0.3, "fiber": 3.3, "satFat": 0.05, "sugar": 0,
+    "vitC": 1, "vitD": 1.7, "folate": 28, "b12": 0, "k2": 0, "calcium": 2, "magnesium": 20, "potassium": 304, "sodium": 5, "selenium": 2.6, "zinc": 0.5, "iron": 0.3, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.02, "sugarType": "natural", "cholesterol": 0,
+    "note": "鲜香菇；维D与钾不错，高纤低卡"
+  },
+  {
+    "name": "红椒(彩椒)",
+    "kcal100": 26, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 1, "carb": 6, "fat": 0.3, "fiber": 1.5, "satFat": 0.05, "sugar": 4.2,
+    "vitC": 130, "vitD": 0, "folate": 18, "b12": 0, "k2": 0, "calcium": 7, "magnesium": 12, "potassium": 211, "sodium": 4, "selenium": 0.2, "zinc": 0.2, "iron": 0.4, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.05, "sugarType": "natural", "cholesterol": 0,
+    "note": "彩椒；维C极高"
+  },
+  {
+    "name": "番茄",
+    "kcal100": 18, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 0.9, "carb": 3.9, "fat": 0.2, "fiber": 1.2, "satFat": 0.03, "sugar": 2.6,
+    "vitC": 14, "vitD": 0, "folate": 14, "b12": 0, "k2": 0, "calcium": 10, "magnesium": 10, "potassium": 237, "sodium": 5, "selenium": 0.1, "zinc": 0.2, "iron": 0.3, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.03, "sugarType": "natural", "cholesterol": 0,
+    "note": "番茄；低糖低卡"
+  },
+  {
+    "name": "花菜(菜花)",
+    "kcal100": 25, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 2.1, "carb": 5, "fat": 0.3, "fiber": 2, "satFat": 0.05, "sugar": 1.9,
+    "vitC": 61, "vitD": 0, "folate": 57, "b12": 0, "k2": 0, "calcium": 22, "magnesium": 15, "potassium": 299, "sodium": 33, "selenium": 0.3, "zinc": 0.2, "iron": 0.3, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.05, "sugarType": "natural", "cholesterol": 0,
+    "note": "菜花；维C与叶酸"
+  },
+  {
+    "name": "西葫芦",
+    "kcal100": 17, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 1.2, "carb": 3.2, "fat": 0.2, "fiber": 0.9, "satFat": 0.03, "sugar": 1.8,
+    "vitC": 17, "vitD": 0, "folate": 20, "b12": 0, "k2": 0, "calcium": 15, "magnesium": 14, "potassium": 261, "sodium": 2, "selenium": 0.1, "zinc": 0.2, "iron": 0.3, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.04, "sugarType": "natural", "cholesterol": 0,
+    "note": "西葫芦/葫芦瓜；低卡"
+  },
+  {
+    "name": "苹果",
+    "kcal100": 52, "defaultGrams": 100, "unit": "个", "unitGrams": 100,
+    "protein": 0.3, "carb": 14, "fat": 0.2, "fiber": 2.4, "satFat": 0.04, "sugar": 10.4,
+    "vitC": 4, "vitD": 0, "folate": 6, "b12": 0, "k2": 0, "calcium": 6, "magnesium": 5, "potassium": 119, "sodium": 1, "selenium": 0, "zinc": 0.1, "iron": 0.1, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.02, "sugarType": "natural", "cholesterol": 0,
+    "note": "苹果；果糖为主(天然糖)"
+  },
+  {
+    "name": "三文鱼",
+    "kcal100": 208, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 20, "carb": 0, "fat": 13, "fiber": 0, "satFat": 2.5, "sugar": 0,
+    "vitC": 0, "vitD": 11, "folate": 25, "b12": 4.3, "k2": 0, "calcium": 9, "magnesium": 27, "potassium": 363, "sodium": 59, "selenium": 35, "zinc": 0.4, "iron": 0.3, "choline": 56,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.1, "sugarType": "natural", "cholesterol": 55,
+    "note": "EPA+DHA本项填0（科目只跟踪鱼油补剂，膳食omega-3不重复计；如需并入请告知）；蛋白与维D高"
   }
 ]

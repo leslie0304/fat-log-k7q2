@@ -120,6 +120,7 @@ input, select { font-family: inherit; font-size: 14px; }
 .macro.m-carb .bar > i { background: var(--gold); }
 .macro.m-fat .bar > i { background: var(--orange); }
 .macro.m-fiber .bar > i { background: linear-gradient(90deg, #7cb342, #4e7a2a); }
+.m-scale { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 3px; padding: 0 1px; }
 .m-kcal > i { background: linear-gradient(90deg, #f0a05a, var(--orange)); }
 .ana { margin-top: 12px; border-top: 1px dashed #ddd6c4; padding-top: 9px; }
 .ana-title { font-size: 12px; font-weight: 600; color: #8a8574; margin-bottom: 5px; letter-spacing: .05em; }
@@ -226,6 +227,9 @@ input, select { font-family: inherit; font-size: 14px; }
 .photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .photo-item { width: 104px; }
 .photo-item img { width: 104px; height: 104px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; }
+.photo-item.fail { display: flex; align-items: center; justify-content: center; background: #f3ede1; border: 1px dashed var(--line); }
+.photo-item.fail::after { content: '⚠ 图加载失败'; font-size: 10px; color: #b06a3a; text-align: center; padding: 4px; }
+.photo-item.fail img { display: none; }
 .photo-item select { width: 100%; margin-top: 4px; font-size: 11.5px; border: 1px solid var(--line); border-radius: 6px; padding: 2px; background: #fff; }
 .photo-item .ai-btn {
   width: 100%; margin-top: 4px; font-size: 11px; padding: 3px 0;

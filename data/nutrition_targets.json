@@ -13,7 +13,7 @@
       "items": [
         { "key": "sugar", "name": "添加糖", "unit": "g/天", "max": 25, "target": "≤25 g", "dir": "max", "auto": true, "note": "杜绝甜饮、奶茶、精制甜点" },
         { "key": "satFat", "name": "饱和脂肪", "unit": "g/天", "max": 12.7, "target": "≤12.7 g（<总热量6%）", "dir": "max", "auto": true, "note": "严控肥肉/黄油/奶油/肥牛/奶油蛋糕" },
-        { "key": "epaDha", "name": "EPA+DHA", "unit": "mg/天", "min": 250, "max": 500, "target": "250–500 mg", "dir": "range", "auto": true, "note": "深海鱼/鱼油，降甘油三酯·抗炎·护冠脉" },
+        { "key": "epaDha", "name": "EPA+DHA", "unit": "mg/天", "min": 250, "max": 600, "target": "250–600 mg", "dir": "range", "auto": true, "note": "深海鱼/鱼油，降甘油三酯·抗炎·护冠脉（上限按每日2粒鱼油≈600mg设定）" },
         { "key": "betaGlucan", "name": "β-葡聚糖", "unit": "g/天", "min": 3, "target": "≥3 g", "dir": "min", "auto": true, "note": "燕麦米、大麦仁，降LDL核心靶点" },
         { "key": "anthocyanin", "name": "花青素", "unit": "mg/天", "min": 50, "max": 200, "target": "50–200 mg（观测）", "dir": "range", "auto": true, "note": "深色浆果/紫薯/桑葚/紫甘蓝/黑枸杞；抗炎·改善血管内皮·轻度降压" },
         { "key": "ala", "name": "α-亚麻酸(ALA)", "unit": "g/天", "min": 1, "max": 2, "target": "1–2 g（观测）", "dir": "range", "auto": true, "note": "植物性Omega-3；亚麻籽/奇亚籽/核桃" }

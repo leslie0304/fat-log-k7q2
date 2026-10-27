@@ -791,11 +791,11 @@ function renderDash(el) {
           <div class="energy-big"><span class="have">${kcal}<small>kcal 已摄入</small></span></div>
           <div class="energy-big"><span class="goal">${goal}<small>kcal 新参考值</small></span></div>
         </div>
-        <div class="macro m-kcal"><div class="m-head"><b>热量</b><span>${kcal} / ${goal} kcal</span></div><div class="bar"><i style="width:${Math.min(100, kcal / goal * 100)}%"></i></div></div>
-        <div class="macro m-protein"><div class="m-head"><b>蛋白质</b><span>${mac.protein} / ${st.proteinTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.protein / (+st.proteinTarget || 120) * 100)}%"></i></div></div>
-        <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div></div>
-        <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div></div>
-        <div class="macro m-fiber"><div class="m-head"><b>膳食纤维</b><span>${mac.fiber} / ${fiberTarget()}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fiber / fiberTarget() * 100)}%"></i></div></div>
+        <div class="macro m-kcal"><div class="m-head"><b>热量</b><span>${kcal} / ${goal} kcal</span></div><div class="bar"><i style="width:${Math.min(100, kcal / goal * 100)}%"></i></div><div class="m-scale"><span>0</span><span>${goal} kcal</span></div></div>
+        <div class="macro m-protein"><div class="m-head"><b>蛋白质</b><span>${mac.protein} / ${st.proteinTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.protein / (+st.proteinTarget || 120) * 100)}%"></i></div><div class="m-scale"><span>0</span><span>${st.proteinTarget} g</span></div></div>
+        <div class="macro m-carb"><div class="m-head"><b>碳水</b><span>${mac.carb} / ${st.carbTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.carb / (+st.carbTarget || 215) * 100)}%"></i></div><div class="m-scale"><span>0</span><span>${st.carbTarget} g</span></div></div>
+        <div class="macro m-fat"><div class="m-head"><b>脂肪</b><span>${mac.fat} / ${st.fatTarget}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fat / (+st.fatTarget || 57) * 100)}%"></i></div><div class="m-scale"><span>0</span><span>${st.fatTarget} g</span></div></div>
+        <div class="macro m-fiber"><div class="m-head"><b>膳食纤维</b><span>${mac.fiber} / ${fiberTarget()}g</span></div><div class="bar"><i style="width:${Math.min(100, mac.fiber / fiberTarget() * 100)}%"></i></div><div class="m-scale"><span>0</span><span>${fiberTarget()} g</span></div></div>
       </div>
       <div class="card">
         <h3>🥗 精准营养目标监控 <span class="link" style="cursor:default">每日目标</span></h3>
@@ -829,7 +829,7 @@ function renderDash(el) {
       </div>
       <div class="card">
         <h3>当日照片 <span class="link" data-go="diet">整理 ›</span></h3>
-        <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
+        <div class="photo-grid">${dayOf(S.date).photos.slice(-6).map(p => `<div class="photo-item"><img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}" onerror="this.style.display='none';this.parentNode.classList.add('fail')"></div>`).join('') || '<div class="muted">白天微信拍的照片，会自动出现在这里</div>'}</div>
       </div>
     </div>
   </div>`;
@@ -922,7 +922,7 @@ function renderDiet(el) {
   const pg = el.querySelector('#photoGrid');
   pg.innerHTML = d.photos.map((p, i) => `
     <div class="photo-item">
-      <img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}">
+      <img src="photos/${S.date}/${encodeURIComponent(p.file)}" data-open="photos/${S.date}/${encodeURIComponent(p.file)}" onerror="this.style.display='none';this.parentNode.classList.add('fail')">
       <select data-i="${i}">${MEALS.map(m => `<option ${m === p.meal ? 'selected' : ''}>${m}</option>`).join('')}</select>
       ${S.settings.aiKey ? `<button class="ai-btn" data-i="${i}">AI识别</button>` : ''}
     </div>`).join('') || '<div class="muted">本日还没有照片</div>';
