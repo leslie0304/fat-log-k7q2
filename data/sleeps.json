@@ -285,5 +285,23 @@
     "breathRate": 14,
     "breathQuality": 98,
     "note": "手环卡(10月31日)：00:04入睡-07:13醒，睡眠6h25m；深睡1h55m(占比30%)/浅3h26m/REM1h4m，清醒4次(偏高)；HRV72/静息67/血氧96/呼吸质量98；质量一般，易醒"
+  },
+  {
+    "date": "2026-11-01",
+    "hours": 7.38,
+    "quality": 3,
+    "score": 83,
+    "bedtime": "23:52",
+    "waketime": "07:05",
+    "deepMin": 129,
+    "lightMin": 237,
+    "remMin": 77,
+    "wakeCount": 1,
+    "hrv": 83,
+    "restingHr": 62,
+    "spo2": 96,
+    "breathRate": 13,
+    "breathQuality": 98,
+    "note": "华为睡眠卡(11月1日)：10/31 23:52→07:05，7h23m；深2h9m(29%)/浅3h57m(53%)/REM1h17m(18%)；清醒1次；HRV83/静息62/血氧96；评分83超87%用户"
   }
 ]

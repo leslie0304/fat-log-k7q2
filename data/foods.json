@@ -1130,5 +1130,45 @@
     "vitC": 0, "vitD": 11, "folate": 25, "b12": 4.3, "k2": 0, "calcium": 9, "magnesium": 27, "potassium": 363, "sodium": 59, "selenium": 35, "zinc": 0.4, "iron": 0.3, "choline": 56,
     "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.1, "sugarType": "natural", "cholesterol": 55,
     "note": "EPA+DHA本项填0（科目只跟踪鱼油补剂，膳食omega-3不重复计；如需并入请告知）；蛋白与维D高"
+  },
+  {
+    "name": "白粥",
+    "kcal100": 46, "defaultGrams": 250, "unit": "克", "unitGrams": 1,
+    "protein": 1, "carb": 10, "fat": 0.3, "fiber": 0.3, "satFat": 0.1, "sugar": 0.1,
+    "vitC": 0, "vitD": 0, "folate": 2, "b12": 0, "k2": 0, "calcium": 3, "magnesium": 3, "potassium": 20, "sodium": 5, "selenium": 0.5, "zinc": 0.2, "iron": 0.1, "choline": 2,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.05, "sugarType": "natural", "cholesterol": 0,
+    "note": "白米粥；低卡低纤含水多"
+  },
+  {
+    "name": "牛腩糁汤",
+    "kcal100": 70, "defaultGrams": 300, "unit": "克", "unitGrams": 1,
+    "protein": 5.5, "carb": 2.5, "fat": 4, "fiber": 0.3, "satFat": 1.8, "sugar": 0.2,
+    "vitC": 0, "vitD": 0, "folate": 3, "b12": 0.3, "k2": 0, "calcium": 8, "magnesium": 8, "potassium": 90, "sodium": 130, "selenium": 2, "zinc": 0.8, "iron": 0.5, "choline": 20,
+    "betaGlucan": 0.5, "phytosterol": 5, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.05, "sugarType": "natural", "cholesterol": 28,
+    "note": "牛腩糁汤（红区·浓肉汤+牛腩+大麦仁）：复合估算 per100g 含汤底+少量牛腩；嘌呤高推尿酸539、牛腩饱和脂肪推高LDL5.04"
+  },
+  {
+    "name": "三杯鸡(外卖)",
+    "kcal100": 180, "defaultGrams": 150, "unit": "克", "unitGrams": 1,
+    "protein": 16, "carb": 4, "fat": 11, "fiber": 0, "satFat": 3, "sugar": 3,
+    "vitC": 0, "vitD": 0, "folate": 4, "b12": 0.3, "k2": 0, "calcium": 10, "magnesium": 15, "potassium": 200, "sodium": 300, "selenium": 10, "zinc": 1.2, "iron": 1, "choline": 50,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0.2, "anthocyanin": 0, "ala": 0.1, "sugarType": "added", "cholesterol": 60,
+    "note": "外卖三杯鸡（麻油+酱油+糖红烧）：添加糖3g/100g；钠偏高"
+  },
+  {
+    "name": "麻辣鱿鱼皮(零食)",
+    "kcal100": 330, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 28, "carb": 8, "fat": 20, "fiber": 0, "satFat": 4, "sugar": 2,
+    "vitC": 0, "vitD": 0, "folate": 5, "b12": 1, "k2": 0, "calcium": 50, "magnesium": 30, "potassium": 200, "sodium": 1500, "selenium": 40, "zinc": 1.5, "iron": 2, "choline": 30,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0.3, "anthocyanin": 0, "ala": 0.1, "sugarType": "added", "cholesterol": 200,
+    "note": "麻辣鱿鱼皮零食（150g包装吃100g）：高钠（1500mg/100g）高添加糖；加工零食"
+  },
+  {
+    "name": "杏鲍菇",
+    "kcal100": 25, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 2.2, "carb": 5.2, "fat": 0.3, "fiber": 3.3, "satFat": 0.05, "sugar": 0,
+    "vitC": 1, "vitD": 1.7, "folate": 28, "b12": 0, "k2": 0, "calcium": 2, "magnesium": 20, "potassium": 304, "sodium": 5, "selenium": 2.6, "zinc": 0.5, "iron": 0.3, "choline": 0,
+    "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.02, "sugarType": "natural", "cholesterol": 0,
+    "note": "杏鲍菇（鲜）；低卡高纤高钾"
   }
 ]
