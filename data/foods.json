@@ -1170,5 +1170,93 @@
     "vitC": 1, "vitD": 1.7, "folate": 28, "b12": 0, "k2": 0, "calcium": 2, "magnesium": 20, "potassium": 304, "sodium": 5, "selenium": 2.6, "zinc": 0.5, "iron": 0.3, "choline": 0,
     "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "transFat": 0, "anthocyanin": 0, "ala": 0.02, "sugarType": "natural", "cholesterol": 0,
     "note": "杏鲍菇（鲜）；低卡高纤高钾"
+  },
+  {
+    "name": "面包",
+    "kcal100": 265, "defaultGrams": 40, "unit": "克", "unitGrams": 1,
+    "protein": 9, "carb": 49, "fat": 3.2, "fiber": 2.5,
+    "satFat": 0.6, "sugar": 4, "sugarType": "natural", "transFat": 0, "cholesterol": 0,
+    "vitC": 0, "vitD": 0, "folate": 20, "b12": 0, "k2": 0, "calcium": 30, "magnesium": 23, "potassium": 115, "sodium": 450, "selenium": 0.5, "zinc": 0.7, "iron": 0.7, "choline": 10, "betaGlucan": 1.5, "phytosterol": 30, "epaDha": 0, "anthocyanin": 0, "ala": 0.1,
+    "note": "白面包/餐包约265kcal/100g；half-bun按40g计"
+  },
+  {
+    "name": "苏打饼干",
+    "kcal100": 430, "defaultGrams": 25, "unit": "克", "unitGrams": 1,
+    "protein": 9, "carb": 68, "fat": 14, "fiber": 2.5,
+    "satFat": 3, "sugar": 1.5, "sugarType": "natural", "transFat": 0.2, "cholesterol": 0,
+    "vitC": 0, "vitD": 0, "folate": 30, "b12": 0, "k2": 0, "calcium": 40, "magnesium": 15, "potassium": 120, "sodium": 600, "selenium": 0.5, "zinc": 0.5, "iron": 1, "choline": 5, "betaGlucan": 0, "phytosterol": 40, "epaDha": 0, "anthocyanin": 0, "ala": 0.5,
+    "note": "苏打饼干约430kcal/100g；1小包≈25g"
+  },
+  {
+    "name": "烤香肠",
+    "kcal100": 300, "defaultGrams": 50, "unit": "克", "unitGrams": 1,
+    "protein": 12, "carb": 3, "fat": 27, "fiber": 0,
+    "satFat": 10, "sugar": 1, "sugarType": "added", "transFat": 0.3, "cholesterol": 60,
+    "vitC": 0, "vitD": 0.5, "folate": 3, "b12": 0.5, "k2": 0, "calcium": 12, "magnesium": 12, "potassium": 200, "sodium": 900, "selenium": 5, "zinc": 2, "iron": 1, "choline": 40, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.1,
+    "note": "烤香肠(红区·香肠)约300kcal/100g；1根≈50g；高钠高饱和脂肪"
+  },
+  {
+    "name": "白斩鸡",
+    "kcal100": 215, "defaultGrams": 120, "unit": "克", "unitGrams": 1,
+    "protein": 19, "carb": 0, "fat": 15, "fiber": 0,
+    "satFat": 4.5, "sugar": 0, "sugarType": "natural", "transFat": 0, "cholesterol": 90,
+    "vitC": 0, "vitD": 0.2, "folate": 5, "b12": 0.4, "k2": 0, "calcium": 12, "magnesium": 20, "potassium": 220, "sodium": 80, "selenium": 10, "zinc": 1.5, "iron": 1, "choline": 60, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.1,
+    "note": "白斩鸡带皮约215kcal/100g；2块≈120g；皮饱和脂肪偏高"
+  },
+  {
+    "name": "茄子",
+    "kcal100": 25, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 1, "carb": 6, "fat": 0.2, "fiber": 3,
+    "satFat": 0.03, "sugar": 3.5, "sugarType": "natural", "transFat": 0, "cholesterol": 0,
+    "vitC": 2, "vitD": 0, "folate": 22, "b12": 0, "k2": 0, "calcium": 12, "magnesium": 14, "potassium": 230, "sodium": 2, "selenium": 0.3, "zinc": 0.3, "iron": 0.4, "choline": 6, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.05,
+    "note": "茄子(蒸/烧)约25kcal/100g；低卡高纤"
+  },
+  {
+    "name": "杂鱼",
+    "kcal100": 120, "defaultGrams": 90, "unit": "克", "unitGrams": 1,
+    "protein": 18, "carb": 0, "fat": 5, "fiber": 0,
+    "satFat": 1.2, "sugar": 0, "sugarType": "natural", "transFat": 0, "cholesterol": 70,
+    "vitC": 0, "vitD": 2, "folate": 5, "b12": 1.5, "k2": 0, "calcium": 40, "magnesium": 25, "potassium": 300, "sodium": 70, "selenium": 30, "zinc": 0.5, "iron": 0.8, "choline": 50, "betaGlucan": 0, "phytosterol": 0, "epaDha": 50, "anthocyanin": 0, "ala": 0.1,
+    "note": "杂鱼(清蒸)约120kcal/100g；1条≈90g"
+  },
+  {
+    "name": "炒鸡蛋",
+    "kcal100": 155, "defaultGrams": 100, "unit": "克", "unitGrams": 1,
+    "protein": 13, "carb": 2.5, "fat": 11, "fiber": 0,
+    "satFat": 3, "sugar": 0.5, "sugarType": "natural", "transFat": 0, "cholesterol": 370,
+    "vitC": 0, "vitD": 2, "folate": 47, "b12": 0.9, "k2": 10, "calcium": 56, "magnesium": 12, "potassium": 126, "sodium": 110, "selenium": 30, "zinc": 1.3, "iron": 1.8, "choline": 290, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0,
+    "note": "炒鸡蛋(加油)约155kcal/100g；4筷子≈100g"
+  },
+  {
+    "name": "红烧芋艿",
+    "kcal100": 110, "defaultGrams": 150, "unit": "克", "unitGrams": 1,
+    "protein": 1.5, "carb": 24, "fat": 1.2, "fiber": 3.5,
+    "satFat": 0.2, "sugar": 3, "sugarType": "natural", "transFat": 0, "cholesterol": 0,
+    "vitC": 5, "vitD": 0, "folate": 20, "b12": 0, "k2": 0, "calcium": 20, "magnesium": 25, "potassium": 400, "sodium": 250, "selenium": 0.5, "zinc": 0.3, "iron": 0.5, "choline": 10, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.05,
+    "note": "红烧芋艿(芋头)约110kcal/100g；5块≈150g"
+  },
+  {
+    "name": "韭菜",
+    "kcal100": 30, "defaultGrams": 80, "unit": "克", "unitGrams": 1,
+    "protein": 2.5, "carb": 4.5, "fat": 0.5, "fiber": 2.5,
+    "satFat": 0.1, "sugar": 1.5, "sugarType": "natural", "transFat": 0, "cholesterol": 0,
+    "vitC": 20, "vitD": 0, "folate": 100, "b12": 0, "k2": 0, "calcium": 40, "magnesium": 15, "potassium": 250, "sodium": 3, "selenium": 0.5, "zinc": 0.4, "iron": 1.5, "choline": 10, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.05,
+    "note": "韭菜(炒)约30kcal/100g；五筷子≈80g"
+  },
+  {
+    "name": "羊杂汤",
+    "kcal100": 80, "defaultGrams": 400, "unit": "克", "unitGrams": 1,
+    "protein": 8, "carb": 1, "fat": 5, "fiber": 0,
+    "satFat": 2, "sugar": 0, "sugarType": "natural", "transFat": 0, "cholesterol": 180,
+    "vitC": 0, "vitD": 0.5, "folate": 10, "b12": 2, "k2": 0, "calcium": 20, "magnesium": 12, "potassium": 150, "sodium": 600, "selenium": 10, "zinc": 2, "iron": 3, "choline": 60, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0.1,
+    "note": "羊杂汤(红区·内脏+肉汤)约80kcal/100g；2碗≈400g；高嘌呤高钠"
+  },
+  {
+    "name": "叶黄素",
+    "kcal100": 0, "defaultGrams": 1, "unit": "粒", "unitGrams": 1,
+    "protein": 0, "carb": 0, "fat": 0, "fiber": 0,
+    "satFat": 0, "sugar": 0, "sugarType": "natural", "transFat": 0, "cholesterol": 0,
+    "vitC": 0, "vitD": 0, "folate": 0, "b12": 0, "k2": 0, "calcium": 0, "magnesium": 0, "potassium": 0, "sodium": 0, "selenium": 0, "zinc": 0, "iron": 0, "choline": 0, "betaGlucan": 0, "phytosterol": 0, "epaDha": 0, "anthocyanin": 0, "ala": 0,
+    "note": "叶黄素补剂；0热量0宏量；1粒≈1g"
   }
 ]

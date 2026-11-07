@@ -370,5 +370,20 @@
     "spo2": 96,
     "breathRate": 15,
     "note": "华为睡眠卡(11月6日·周五)：7h10m；深27%(116min)/浅58%(249min)/REM18%(77min)；清醒4次(偏高)；HRV34/静息72/血氧96/呼吸15；评分82(超82%用户)"
+  },
+  {
+    "date": "2026-11-07",
+    "hours": 4.8,
+    "quality": 2,
+    "score": 60,
+    "deepMin": 48,
+    "lightMin": 202,
+    "remMin": 34,
+    "wakeCount": 2,
+    "hrv": 84,
+    "restingHr": 64,
+    "spo2": 96,
+    "breathRate": 13,
+    "note": "华为睡眠卡(11月7日)：夜间睡眠4h48m；深48min(72%)/浅3h22m/REM34min；清醒2次；HRV84/静息64/血氧96/呼吸13；评分60"
   }
 ]
